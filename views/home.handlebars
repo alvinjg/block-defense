@@ -1,0 +1,28 @@
+<body id="home-body">
+    {{> nav}}
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto mt-5">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Game ID" maxlength="5" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">Join Game</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row spacer"></div>
+        <div class="row">
+            <div class="mx-auto col-sm-6">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Team Name</span>
+                    </div>
+                    <input type="text" class="form-control" maxlength="20" />
+                </div>
+
+                <button id="createGame" type="button" class="btn btn-secondary btn-lg btn-block">Create Game</button>
+            </div>
+        </div>
+    </div>
+</body>

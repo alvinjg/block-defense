@@ -1,0 +1,18 @@
+div.spacer {
+    height: 400px;
+}
+
+#home-body, #game-lobby-body{
+    background-image: url("../img/nasa-Q1p7bh3SHj8-unsplash.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+
+#game-lobby-body {
+    color: #fff;
+}
+
+.player-list {
+    height: 400px;
+}
