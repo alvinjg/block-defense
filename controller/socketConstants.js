@@ -1,0 +1,8 @@
+
+
+module.exports = {
+    SEND_GAME_SESSION:1,
+    SESSION_REQUEST:2,
+    CLIENT_SESSION_ESTABLISHED:3,
+    SESSION_NOT_EXIST:4
+};

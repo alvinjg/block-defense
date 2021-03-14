@@ -14,11 +14,12 @@
         <div class="row spacer"></div>
         <div class="row">
             <div class="mx-auto col-sm-6">
-                <form action="/api/game/create" method="POST">
+                <form id="createGameForm" action="/api/game/create" method="POST">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Team Name</span>
                     </div>
+                    <input name="leader" type="hidden" class="form-control" value="" />
                     <input name="teamName" type="text" class="form-control" maxlength="20" />
                 </div>
 

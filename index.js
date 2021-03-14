@@ -39,7 +39,7 @@ if(dbURI){
             console.log(`Server started on port ${PORT}`);
         });
 
-        // create socket connection for each client
+        // Handle socket connection for each client
         socketHandler(server);
        
     })
@@ -48,7 +48,7 @@ if(dbURI){
     const server = app.listen(PORT, () => {
         console.log(`Server started on port ${PORT}`);
     });
-    // create socket connection for each client
+    // Handle socket connection for each client
     socketHandler(server);
 }
 
