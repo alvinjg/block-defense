@@ -15,17 +15,17 @@ router.post('/create', (req, res) => {
     const leader = req.body.leader;
     let gameID = generateGameID();
 
-    if(teamName.length  === 0){
+    if (teamName.length === 0) {
         res.status(400).send();
         return;
     }
 
-    const game = new Game({
-        "teamName": teamName,
-        "leader": leader,
-        "gameID": gameID,
-        "dateCreated": Date.now()
-    });
+    const game = gameEnv.gameTemplate();
+    game.teamName = teamName;
+    game.leader = sessionId;
+    game.gameID = gameID;
+    game.dateCreated = Date.now();
+
 
     // save game to an Array
     let tempGame = gameEnv.allGames[gameID];

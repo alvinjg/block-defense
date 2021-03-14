@@ -1,8 +1,31 @@
 
 const gameEnv = {
     allGames: {},
-    clientToGameMapping: {},
-    session:{}
+    clientToGameMapping: {
+        "sessId": 0
+    },
+    socketToSessionMapping: {
+        "socketId": ""
+    },
+    session: {
+        "sessId": {}
+    },
+    gameTemplate: function () {
+        return {
+            "teamName": "",
+            "leader": "",
+            "gameID": 0,
+            "dateCreated": 0,
+            "players": new Set(),
+            "isStarted": false
+        };
+    },
+    sessionTemplate: function () {
+        return {
+            "id": "",
+            "name": ""
+        };
+    }
 };
 
 module.exports = gameEnv;

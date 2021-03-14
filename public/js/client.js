@@ -3,15 +3,18 @@ const sockConst = {
     SESSION_REQUEST: 2,
     CLIENT_SESSION_ESTABLISHED: 3,
     SESSION_NOT_EXIST: 4,
-    CHECK_ONGOING_GAME:5,
-    HAS_ONGOING_GAME:6,
+    CHECK_ONGOING_GAME: 5,
+    HAS_ONGOING_GAME: 6,
     INIT_GAME_LOBBY: 7,
-    JOIN_GAME: 8
+    JOIN_GAME: 8,
+    PLAYER_JOINED: 9,
+    PLAYER_DISCONNECT: 10
 };
 
 let myGameSession = {};
 let myGameSessionKey = "GameSessionID";
 let localSessionId = window.localStorage.getItem(myGameSessionKey);
+
 
 (() => {
     const clientSocket = io();
@@ -55,6 +58,8 @@ function initPage(clientSocket) {
         clientSocket.on(sockConst.HAS_ONGOING_GAME, (url) => {
             if (url.length > 0) {
                 window.location.replace(url);
+            } else {
+                initHome();
             }
         });
     }
@@ -64,18 +69,32 @@ function initPage(clientSocket) {
     }
 }
 
+function initHome() {
+    setHome_display();
+}
+
 function initGameLobby(clientSocket) {
-    
+
     clientSocket.emit(sockConst.JOIN_GAME, {
-        sessionId: myGameSession.id, 
+        sessionId: myGameSession.id,
         gameId: getGameIdFromUrl()
     });
 
-    clientSocket.emit(sockConst.INIT_GAME_LOBBY);
+    clientSocket.emit(sockConst.INIT_GAME_LOBBY, myGameSession.id);
+    setLobby_hideStartGame(myGameSession.id);
 
+    clientSocket.on(sockConst.PLAYER_JOINED, (gameStr) => {
+        let game = JSON.parse(gameStr);
+        setLobby_refreshPlayerTile(game.players);
+    });
+
+    clientSocket.on(sockConst.PLAYER_DISCONNECT, (gameStr) => {
+        let game = JSON.parse(gameStr);
+        setLobby_refreshPlayerTile(game.players);
+    });
 }
 
-function getGameIdFromUrl(){
+function getGameIdFromUrl() {
     let hostPath = window.location.pathname;
     let matcher = /(?<=gamelobby\/)(\d+)/g;
     return matcher.exec(hostPath)[0];

@@ -4,13 +4,13 @@
         <div class="row">
             <label class="mt-5">Game ID: {{gameid}}</label>
         </div>
-        <div class="row player-list">
+        <div class="row team-container">
             <div class="mx-auto mt-2">
                 <h2>{{teamName}}</h2>
             </div>
-
+            <div class="col-12 players"></div>
         </div>
-        <div class="row">
+        <div id="startGame" class="row d-none" data-leader="{{leaderId}}">
             <div class="mx-auto mt-5">
                 <button type="button" class="btn btn-secondary btn-lg btn-block">Start Game #{{gameid}}</button>
             </div>

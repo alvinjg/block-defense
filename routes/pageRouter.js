@@ -35,12 +35,13 @@ router.get('/', (req, res) => {
 router.get('/gamelobby/:id', (req, res) => {
     const gameid = req.params.id;
     let game = gameEnv.allGames[gameid];
-
+    
     if (game) {
         // populate the object in 2nd parameter to pass value in gambelobby page
         res.render('gameLobby', {
             "gameid": gameid,
-            "teamName": game.teamName
+            "teamName": game.teamName,
+            "leaderId": game.leader
         });
     } else {
         let fullUrl = req.protocol + '://' + req.get('host') + '/';
