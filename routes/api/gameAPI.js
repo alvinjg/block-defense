@@ -10,11 +10,15 @@ const gameEnv = require('../../controller/gameEnvironment');
 
 // API for creating a game this returns the url where the client shoulc be redirected
 router.post('/create', (req, res) => {
-    console.log('Creating game...');
-
+    const sessionId = req.body.sessionId;
     const teamName = req.body.teamName;
     const leader = req.body.leader;
     let gameID = generateGameID();
+
+    if(teamName.length  === 0){
+        res.status(400).send();
+        return;
+    }
 
     const game = new Game({
         "teamName": teamName,
@@ -25,12 +29,36 @@ router.post('/create', (req, res) => {
 
     // save game to an Array
     let tempGame = gameEnv.allGames[gameID];
-    if(!tempGame){
+    if (!tempGame) {
         gameEnv.allGames[gameID] = game;
     }
 
+    // set client as a player of the created game
+    gameEnv.clientToGameMapping[sessionId] = gameID;
+
     console.log(`Game for ${game.teamName} was saved`);
     let fullUrl = req.protocol + '://' + req.get('host') + '/gamelobby/' + gameID;
+
+    res.writeHead(302, {
+        "location": fullUrl
+    });
+    res.end();
+});
+
+// API for joining an existing game
+router.post('/join', (req, res) => {
+    const sessionId = req.body.sessionId;
+    const gameId = req.body.gameId;
+
+    let fullUrl = req.protocol + '://' + req.get('host') + '/gamelobby/' + gameId;
+
+    let tempGame = gameEnv.allGames[gameId];
+    if (!tempGame) {
+        fullUrl = req.protocol + '://' + req.get('host') + '/';
+    }
+
+    // set client as a player of the created game
+    gameEnv.clientToGameMapping[sessionId] = gameId;
 
     res.writeHead(302, {
         "location": fullUrl
@@ -44,7 +72,7 @@ const generateGameID = () => {
     let max = 100000;
     return Math.floor(
         Math.random() * (max - min + 1) + min
-    )
+    ).toString();
 }
 
 

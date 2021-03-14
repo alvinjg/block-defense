@@ -3,27 +3,32 @@
     <div class="container">
         <div class="row">
             <div class="mx-auto mt-5">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Game ID" maxlength="5" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Join Game</button>
+                <form id="joinGameForm" action="/api/game/join" method="POST">
+                    <div class="input-group mb-3">
+                        <input name="sessionId" type="hidden" value="undefined" />
+                        <input name="gameId" type="text" class="form-control" placeholder="Game ID" maxlength="5" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit">Join Game</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <div class="row spacer"></div>
         <div class="row">
             <div class="mx-auto col-sm-6">
                 <form id="createGameForm" action="/api/game/create" method="POST">
-                <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Team Name</span>
+                    <input name="sessionId" type="hidden" value="undefined" />
+                    <input name="leader" type="hidden" class="form-control" value="undefined" />
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Team Name</span>
+                        </div>
+                        <input name="teamName" type="text" class="form-control" maxlength="20" />
                     </div>
-                    <input name="leader" type="hidden" class="form-control" value="" />
-                    <input name="teamName" type="text" class="form-control" maxlength="20" />
-                </div>
 
-                <button id="createGame" type="submit" class="btn btn-secondary btn-lg btn-block">Create Game</button>
+                    <button id="createGame" type="submit" class="btn btn-secondary btn-lg btn-block">Create
+                        Game</button>
                 </form>
             </div>
         </div>
