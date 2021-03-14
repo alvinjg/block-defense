@@ -14,14 +14,16 @@
         <div class="row spacer"></div>
         <div class="row">
             <div class="mx-auto col-sm-6">
+                <form action="/api/game/create" method="POST">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Team Name</span>
                     </div>
-                    <input type="text" class="form-control" maxlength="20" />
+                    <input name="teamName" type="text" class="form-control" maxlength="20" />
                 </div>
 
-                <button id="createGame" type="button" class="btn btn-secondary btn-lg btn-block">Create Game</button>
+                <button id="createGame" type="submit" class="btn btn-secondary btn-lg btn-block">Create Game</button>
+                </form>
             </div>
         </div>
     </div>
