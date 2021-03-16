@@ -3,6 +3,7 @@ const uuid = require('uuid');
 const constants = require('./socketConstants');
 const myUtil = require('./utils');
 const gameEnv = require('./gameEnvironment');
+const randColor = require('randomcolor');
 
 const socketHandler = (server) => {
 
@@ -15,6 +16,7 @@ const socketHandler = (server) => {
         let gameSession = gameEnv.sessionTemplate();
         gameSession.id = sessId;
         gameSession.name = myUtil.genRandomName();
+        gameSession.color = randColor();
 
         // send generated session
         clientSocket.emit(constants.SEND_GAME_SESSION, JSON.stringify(gameSession));
@@ -35,6 +37,16 @@ const socketHandler = (server) => {
         });
         clientSocket.on(constants.CHECK_ONGOING_GAME, (gameSessionId) => {
             let gameId = gameEnv.clientToGameMapping[gameSessionId];
+
+            let game = gameEnv.allGames[gameId];
+
+            if (game) {
+                if (game.isStarted && gameId) {
+                    let fullUrl = '/gamepage/' + gameId;
+                    clientSocket.emit(constants.HAS_ONGOING_GAME, fullUrl);
+                    return;
+                }
+            }
             if (gameId) {
                 let fullUrl = '/gamelobby/' + gameId;
                 clientSocket.emit(constants.HAS_ONGOING_GAME, fullUrl);
@@ -96,7 +108,17 @@ const socketHandler = (server) => {
                 io.to(obj.gameId).emit(constants.PLAYER_JOINED, JSON.stringify(gamecopy));
             }
         });
+        clientSocket.on(constants.START_GAME, (sessId) => {
+            const gameid = gameEnv.clientToGameMapping[sessId];
 
+            if (gameid) {
+                let game = gameEnv.allGames[gameid];
+                game.isStarted = true;
+
+                let urlPath = 'gamepage/' + gameid;
+                io.to(gameid).emit(constants.GAME_STARTED, urlPath);
+            }
+        });
     });
 }
 

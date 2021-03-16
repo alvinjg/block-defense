@@ -1,0 +1,20 @@
+<body id="game-page-body">
+    {{> nav}}
+    <div class="container d-none">
+        <div class="row mt-5">
+            <div class="col-lg-9 justify-content-center" align="center">
+                <canvas id="game-canvas" class="mx-auto" width="800" height="600" style="width: 800px; height: 600px;">
+
+                </canvas>
+            </div>
+            <div id="gamePanel" class="col-lg-3">
+                <h2 class="text-center">{{gameObj.teamName}}</h2>
+                {{#each gameObj.players}}
+                <div class="player" style="background-color: {{this.color}}4a; color: {{this.color}}">
+                    {{this.name}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</body>

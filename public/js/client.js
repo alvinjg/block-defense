@@ -8,7 +8,9 @@ const sockConst = {
     INIT_GAME_LOBBY: 7,
     JOIN_GAME: 8,
     PLAYER_JOINED: 9,
-    PLAYER_DISCONNECT: 10
+    PLAYER_DISCONNECT: 10,
+    START_GAME: 11,
+    GAME_STARTED: 12
 };
 
 let myGameSession = {};
@@ -63,9 +65,17 @@ function initPage(clientSocket) {
             }
         });
     }
+    // redirect when game started
+    clientSocket.on(sockConst.GAME_STARTED, (urlpath) => {
+        let loc = window.location;
+        let hostname = loc.protocol + '//' + loc.hostname + ":" + loc.port;
+        window.location.replace(hostname + "/" + urlpath);
+    });
 
     if (hostPath.indexOf("gamelobby") > -1) {
         initGameLobby(clientSocket);
+    } else if (hostPath.indexOf("gamepage") > -1) {
+        initGamePage(clientSocket)
     }
 }
 
@@ -81,7 +91,7 @@ function initGameLobby(clientSocket) {
     });
 
     clientSocket.emit(sockConst.INIT_GAME_LOBBY, myGameSession.id);
-    setLobby_hideStartGame(myGameSession.id);
+    setLobby_showStartGame(myGameSession.id);
 
     clientSocket.on(sockConst.PLAYER_JOINED, (gameStr) => {
         let game = JSON.parse(gameStr);
@@ -92,10 +102,29 @@ function initGameLobby(clientSocket) {
         let game = JSON.parse(gameStr);
         setLobby_refreshPlayerTile(game.players);
     });
+
+    setLobby_display();
+
+    initGameLobbyEvent(clientSocket);
+}
+
+
+const startGameButton = document.querySelector("#startGameButton");
+
+function initGameLobbyEvent(clientSocket) {
+    if (startGameButton) {
+        startGameButton.addEventListener("click", () => {
+            clientSocket.emit(sockConst.START_GAME, myGameSession.id);
+        });
+    }
 }
 
 function getGameIdFromUrl() {
     let hostPath = window.location.pathname;
     let matcher = /(?<=gamelobby\/)(\d+)/g;
     return matcher.exec(hostPath)[0];
+}
+
+function initGamePage(clientSocket) {
+    setGamePage_display();
 }

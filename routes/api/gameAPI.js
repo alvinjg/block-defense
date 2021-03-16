@@ -66,6 +66,18 @@ router.post('/join', (req, res) => {
     res.end();
 });
 
+// router.get('/start/:id',(req,res)=>{
+//     const gameid = req.params.id;
+
+//     let game = gameEnv.allGames[gameid];
+//     game.isStarted = true;
+
+//     let fullUrl = req.protocol + '://' + req.get('host') + '/gamepage/' + gameid;
+//     res.writeHead(302, {
+//         "location": fullUrl
+//     });
+//     res.end();
+// });
 
 const generateGameID = () => {
     let min = 10000;

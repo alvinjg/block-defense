@@ -1,12 +1,14 @@
+
 div.spacer {
     height: 400px;
 }
 
-#home-body, #game-lobby-body{
+#home-body, #game-lobby-body, #game-page-body{
     background-image: url("../img/nasa-Q1p7bh3SHj8-unsplash.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     height: 100vh;
+    color: white;
 }
 
 #game-lobby-body {
@@ -30,6 +32,17 @@ div.spacer {
 }
 
 .team-container .players .tile.my-player{
-    background-color: #88e7cf99;
     border: 2px solid white;
+}
+
+#game-canvas {
+    background-color: #0007145d;
+}
+
+#gamePanel{
+    color: white;
+}
+
+#gamePanel .player{
+    margin-bottom: 0.3rem;
 }
