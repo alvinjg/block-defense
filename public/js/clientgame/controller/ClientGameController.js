@@ -3,7 +3,6 @@ class ClientGameController {
         this._canvas = canvas;
         this._gameModel = gameModel;
 
-        this.createEnemy();
     }
 
     // create intial enemy units

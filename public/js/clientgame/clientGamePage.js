@@ -18,7 +18,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
         if (gameData.spacecrafts) {
             for (let spacecraftData of gameData.spacecrafts) {
                 let spaceship1 = new Spacecraft(canvas, spacecraftData);
-                let cont = new SpacecraftController(spaceship1);
+                let cont = new SpacecraftController(spaceship1, clientSocket);
 
                 let id = spaceship1._property._sessionId;
                 gameModel.spacecrafts.set(id, spaceship1);
@@ -54,9 +54,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
                 controller.onKeyUp(event);
             });
         }
+
     });
-
-
-
 
 };

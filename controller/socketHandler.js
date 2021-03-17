@@ -105,7 +105,7 @@ const socketHandler = (server) => {
                 gameEnv.clientToGameMapping[obj.sessionId] = obj.gameId;
                 let player = gameEnv.session[obj.sessionId];
                 game.players.add(player);
-                clientSocket.join(game.gameID);;
+                clientSocket.join(game.gameID);
 
                 let gamecopy = JSON.parse(JSON.stringify(game));
                 gamecopy.players = Array.from(game.players);

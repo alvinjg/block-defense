@@ -13,10 +13,22 @@ router.post('/create', (req, res) => {
     const sessionId = req.body.sessionId;
     const teamName = req.body.teamName;
     const leader = req.body.leader;
-    let gameID = generateGameID();
+    let gameID = 10000;
+
+    let hasGame = null;
+    do {
+        gameID = generateGameID();
+        hasGame = gameEnv.allGames[gameID];
+    }
+    while (hasGame);
 
     if (teamName.length === 0) {
-        res.status(400).send();
+        let fullUrl = req.protocol + '://' + req.get('host') + '/';
+        res.writeHead(302, {
+            "location": fullUrl
+        });
+        res.end();
+        // res.status(400).send();
         return;
     }
 
@@ -29,7 +41,7 @@ router.post('/create', (req, res) => {
 
     // save game to an Array
     let tempGame = gameEnv.allGames[gameID];
-    if (!tempGame) {
+    if (!hasGame) {
         gameEnv.allGames[gameID] = game;
     }
 

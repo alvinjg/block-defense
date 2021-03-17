@@ -2,7 +2,13 @@ const constants = require('./socketConstants');
 const gameEnv = require('./gameEnvironment');
 
 const gameServer = (io, clientSocket) => {
-    const TEAM_TYPE = { ALLY: 0, ENEMY: 2 };
+    const TEAM_TYPE = { "ALLY": 0, "ENEMY": 2 };
+    const OBJ_MOVEMENT = {
+        "UP": 1,
+        "DOWN": 2,
+        "LEFT": 3,
+        "RIGHT": 4
+    };
 
     class CanvasObjectProperty {
 
@@ -84,6 +90,7 @@ const gameServer = (io, clientSocket) => {
             this._weapon2 = null;
             this._color = '#0d1d38';
             this._firedAmmos = [];
+            this._sessionId = null; // session of player
         }
     }
 
@@ -91,25 +98,59 @@ const gameServer = (io, clientSocket) => {
         const gameid = gameEnv.clientToGameMapping[sessionId];
 
         if (gameid) {
-            let gameCanvasData = gameEnv.gameCanvasTemplate();
             let game = gameEnv.allGames[gameid];
 
-            if(game){
-                for(let player of game.players){
-                    let spacecraftProp = new SpacecraftProperty();
-                    spacecraftProp._sessionId = player.id;
-                    spacecraftProp._color = player.color;
+            if (game) {
+                // initialize canvas data
+                let gameCanvasData = null;
+                if (game.canvasData === null || game.canvasData === undefined) {
+                    gameCanvasData = gameEnv.gameCanvasTemplate();
+                    gameCanvasData.leaderId = game.leader;
+                    game.canvasData = gameCanvasData;
 
-                    gameCanvasData.spacecrafts.push(spacecraftProp);
+                    for (let player of game.players) {
+                        let spacecraftProp = new SpacecraftProperty();
+                        spacecraftProp._sessionId = player.id;
+                        spacecraftProp._color = player.color;
+
+                        gameCanvasData.spacecrafts.set(player.id, spacecraftProp);
+                    }
+
+                } else {
+                    gameCanvasData = game.canvasData;
                 }
-                
-                clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(gameCanvasData));
+
+                clientSocket.join(game.gameID);
+
+                let canvasDataCopy = JSON.parse(JSON.stringify(gameCanvasData));
+                canvasDataCopy.spacecrafts = Array.from(gameCanvasData.spacecrafts.values());
+                clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(canvasDataCopy));
             }
         }
     });
 
+    clientSocket.on(constants.MOVE_PLAYER, (movementObj) => {
+        let sessionId = movementObj.sessionId;
+        const gameid = gameEnv.clientToGameMapping[sessionId];
+        if (gameid) {
+            let game = gameEnv.allGames[gameid];
+            let canvasData = game.canvasData;
 
+            let spacecraft = canvasData.spacecrafts.get(sessionId);
+            spacecraft._x = movementObj.x;
+            spacecraft._y = movementObj.y;
 
+            io.to(gameid).emit(constants.MOVE_PLAYER, JSON.stringify(movementObj));
+        }
+    });
+
+    clientSocket.on(constants.PLAYER_SHOOTING, (shotObj) => {
+        let sessionId = shotObj.sessionId;
+        const gameid = gameEnv.clientToGameMapping[sessionId];
+        if (gameid) {
+            io.to(gameid).emit(constants.PLAYER_SHOOTING, JSON.stringify(shotObj));
+        }
+    });
 };
 
 module.exports = gameServer;

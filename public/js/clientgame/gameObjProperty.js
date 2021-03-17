@@ -1,4 +1,10 @@
-const TEAM_TYPE = { ALLY: 0, ENEMY: 2 };
+const TEAM_TYPE = { "ALLY": 0, "ENEMY": 2 };
+const OBJ_MOVEMENT = {
+    "UP": 1,
+    "DOWN": 2,
+    "LEFT": 3,
+    "RIGHT": 4
+};
 
 class CanvasObjectProperty {
 
@@ -80,5 +86,6 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._weapon2 = null;
         this._color = '#0d1d38';
         this._firedAmmos = [];
+        this._sessionId = null; // session of player
     }
 }
