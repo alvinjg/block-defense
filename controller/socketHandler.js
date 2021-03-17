@@ -4,6 +4,7 @@ const constants = require('./socketConstants');
 const myUtil = require('./utils');
 const gameEnv = require('./gameEnvironment');
 const randColor = require('randomcolor');
+const gameServer = require('./gameServer');
 
 const socketHandler = (server) => {
 
@@ -122,6 +123,9 @@ const socketHandler = (server) => {
                 io.to(gameid).emit(constants.GAME_STARTED, urlPath);
             }
         });
+
+        // module for the game proper
+        gameServer(io, clientSocket);
     });
 }
 

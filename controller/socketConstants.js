@@ -12,5 +12,6 @@ module.exports = {
     PLAYER_JOINED: 9,
     PLAYER_DISCONNECT: 10,
     START_GAME:11,
-    GAME_STARTED: 12
+    GAME_STARTED: 12,
+    INIT_GAME_CANVAS : 13
 };

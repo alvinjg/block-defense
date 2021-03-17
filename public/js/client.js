@@ -10,8 +10,12 @@ const sockConst = {
     PLAYER_JOINED: 9,
     PLAYER_DISCONNECT: 10,
     START_GAME: 11,
-    GAME_STARTED: 12
+    GAME_STARTED: 12,
+    INIT_GAME_CANVAS: 13
 };
+
+const startGameButton = document.querySelector("#startGameButton");
+const gameCanvas = document.querySelector("#game-canvas");
 
 let myGameSession = {};
 let myGameSessionKey = "GameSessionID";
@@ -108,9 +112,6 @@ function initGameLobby(clientSocket) {
     initGameLobbyEvent(clientSocket);
 }
 
-
-const startGameButton = document.querySelector("#startGameButton");
-
 function initGameLobbyEvent(clientSocket) {
     if (startGameButton) {
         startGameButton.addEventListener("click", () => {
@@ -127,4 +128,5 @@ function getGameIdFromUrl() {
 
 function initGamePage(clientSocket) {
     setGamePage_display();
+    initGameCanvas(gameCanvas, clientSocket, myGameSession);
 }

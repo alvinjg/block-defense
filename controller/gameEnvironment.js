@@ -27,6 +27,13 @@ const gameEnv = {
             "color": "#aaaaaa",
             "isConnected": false
         };
+    },
+    gameCanvasTemplate: function () {
+        return {
+            "spacecrafts": [],
+            "asteroids": [],
+            "asteroidControllers": []
+        };
     }
 };
 
