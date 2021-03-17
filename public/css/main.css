@@ -1,18 +1,48 @@
+
 div.spacer {
     height: 400px;
 }
 
-#home-body, #game-lobby-body{
+#home-body, #game-lobby-body, #game-page-body{
     background-image: url("../img/nasa-Q1p7bh3SHj8-unsplash.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     height: 100vh;
+    color: white;
 }
 
 #game-lobby-body {
     color: #fff;
 }
 
-.player-list {
-    height: 400px;
+.team-container {
+    min-height: 200px;
+    display: flex;
+}
+
+.team-container .players .tile{
+    height: 100px;
+    width: 150px;
+    background-color: #41a7e299;
+    text-align: center;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 5px;
+    align-items: center;
+}
+
+.team-container .players .tile.my-player{
+    border: 2px solid white;
+}
+
+#game-canvas {
+    background-color: #ffffff;
+}
+
+#gamePanel{
+    color: white;
+}
+
+#gamePanel .player{
+    margin-bottom: 0.3rem;
 }

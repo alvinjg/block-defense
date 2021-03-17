@@ -1,0 +1,31 @@
+<body id="game-page-body">
+    {{> nav}}
+    <div class="container d-none">
+        <div class="row mt-5">
+            <div class="col-lg-9 justify-content-center" align="center">
+                <canvas id="game-canvas" class="mx-auto" width="800" height="600" style="width: 800px; height: 600px;">
+
+                </canvas>
+            </div>
+            <div id="gamePanel" class="col-lg-3">
+                <h2 class="text-center">{{gameObj.teamName}}</h2>
+                {{#each gameObj.players}}
+                <div class="player" style="background-color: {{this.color}}4a; color: {{this.color}}">
+                    {{this.name}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <script src="/js/clientgame/gameObjProperty.js"></script>
+    <script src="/js/clientgame/uiObject/CanvasObject.js"></script>
+    <script src="/js/clientgame/uiObject/LivingObject.js"></script>
+    <script src="/js/clientgame/uiObject/Ammo.js"></script>
+    <script src="/js/clientgame/uiObject/Spacecraft.js"></script>
+    <script src="/js/clientgame/uiObject/Asteroid.js"></script>
+    <script src="/js/clientgame/controller/ClientGameController.js"></script>
+    <script src="/js/clientgame/controller/SpacecraftController.js"></script>
+    <script src="/js/clientgame/controller/AsteroidController.js"></script>
+    <script src="/js/clientgame/CanvasPainter.js"></script>
+    <script src="/js/clientgame/gamePageClient.js"></script>
+</body>
