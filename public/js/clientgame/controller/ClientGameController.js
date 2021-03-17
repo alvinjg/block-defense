@@ -30,6 +30,14 @@ class ClientGameController {
         });
     }
 
+    sendModelObjectMovement() {
+        // move spacecrafts
+        let controllers = this._gameModel.spacecraftControllers.values();
+        for (let controller of controllers) {
+            controller.sendPendingMovement();
+        }
+    }
+
 
 
     // check if asteroid is hit

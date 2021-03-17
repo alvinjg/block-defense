@@ -66,7 +66,7 @@ class Asteroid extends LivingObject {
 
     // overridden from LivinObject moveDown()
     moveDown() {
-        let y = this._property._y + this._property._speed_y;
+        let y = this._property.moveDown();
         this._property._y = y;
     }
 }

@@ -49,7 +49,7 @@ class Spacecraft extends LivingObject {
 
     // overriden
     moveUp() {
-        let y = this._property._y - this._property._speed_y;
+        let y = this._property.moveUp();
 
         if (y > this._property._radius + this._moveUpBoundary) {
             this._property._y = y;

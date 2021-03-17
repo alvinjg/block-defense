@@ -17,7 +17,13 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
 
         if (gameData.spacecrafts) {
             for (let spacecraftData of gameData.spacecrafts) {
-                let spaceship1 = new Spacecraft(canvas, spacecraftData);
+                // copy spacecraftData to property object
+                let spaceshipProp = new SpacecraftProperty();
+                for(let key in spacecraftData){
+                    spaceshipProp[key] = spacecraftData[key];
+                }
+
+                let spaceship1 = new Spacecraft(canvas, spaceshipProp);
                 let cont = new SpacecraftController(spaceship1, clientSocket);
 
                 let id = spaceship1._property._sessionId;
@@ -41,6 +47,11 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
             canvasControllerIntervalId = setInterval(() => {
                 gameController.moveModelObjects();
             }, 15);
+
+            // interval for sending movement of objects to server
+            canvasControllerIntervalId = setInterval(() => {
+                gameController.sendModelObjectMovement();
+            }, 75);
 
             // control only the client spacecraft
             document.addEventListener('keydown', (event) => {
