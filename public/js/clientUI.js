@@ -63,21 +63,23 @@ function setLobby_refreshPlayerTile(players) {
     if (playerContainer) {
         setLobby_removeAllPlayerTile();
         for (let i = 0; i < players.length; i++) {
-            let player = players[i]; 
-            
-            let div = document.createElement('div');
-            div.classList.add('tile');
-            div.innerText = player.name;
-            div.style.backgroundColor = player.color + "6e";
-            if(player.id === myGameSession.id){
-                div.classList.add('my-player');
+            let player = players[i];
+
+            if (player.isConnected) {
+                let div = document.createElement('div');
+                div.classList.add('tile');
+                div.innerText = player.name;
+                div.style.backgroundColor = player.color + "6e";
+                if (player.id === myGameSession.id) {
+                    div.classList.add('my-player');
+                }
+
+                playerContainer.appendChild(div);
             }
-    
-            playerContainer.appendChild(div);
         }
     }
 }
- 
+
 function setLobby_removeAllPlayerTile() {
     // remove all child
     while (playerContainer.firstChild) {

@@ -23,7 +23,9 @@ const gameEnv = {
     sessionTemplate: function () {
         return {
             "id": "",
-            "name": ""
+            "name": "",
+            "color": "#aaaaaa",
+            "isConnected": false
         };
     }
 };

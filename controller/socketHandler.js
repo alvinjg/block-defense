@@ -22,18 +22,21 @@ const socketHandler = (server) => {
         clientSocket.emit(constants.SEND_GAME_SESSION, JSON.stringify(gameSession));
         // client request for old session
         clientSocket.on(constants.SESSION_REQUEST, (gameSessionId) => {
-            let sess = gameEnv.session[gameSessionId];
-            if (sess) {
+            let sessObj = gameEnv.session[gameSessionId];
+            if (sessObj) {
                 // return old session
-                clientSocket.emit(constants.SEND_GAME_SESSION, JSON.stringify(sess));
+                sessId = sessObj.id;
+                gameSession = sessObj;
+                clientSocket.emit(constants.SEND_GAME_SESSION, JSON.stringify(gameSession));
                 return;
             } else {
                 clientSocket.emit(constants.SESSION_NOT_EXIST);
             }
         });
         clientSocket.on(constants.CLIENT_SESSION_ESTABLISHED, () => {
-            gameEnv.session[sessId] = gameSession;
-            gameEnv.socketToSessionMapping[clientSocket.id] = sessId;
+            gameSession.isConnected = true;
+            gameEnv.session[gameSession.id] = gameSession;
+            gameEnv.socketToSessionMapping[clientSocket.id] = gameSession.id;
         });
         clientSocket.on(constants.CHECK_ONGOING_GAME, (gameSessionId) => {
             let gameId = gameEnv.clientToGameMapping[gameSessionId];
@@ -58,18 +61,18 @@ const socketHandler = (server) => {
             let sessId = gameEnv.socketToSessionMapping[clientSocket.id];
             if (sessId) {
                 delete gameEnv.socketToSessionMapping[clientSocket.id];
+
                 // remove player game mapping
                 let gameId = gameEnv.clientToGameMapping[sessId];
                 if (gameId) {
-                    delete gameEnv.clientToGameMapping[sessId];
-
                     // remove player from created game
                     let game = gameEnv.allGames[gameId];
                     if (game) {
                         if (!game.isStarted) {
                             for (let player of game.players.values()) {
                                 if (player.id === sessId) {
-                                    game.players.delete(player);
+                                    // game.players.delete(player);
+                                    player.isConnected = false;
                                 }
                             }
                         }
@@ -85,14 +88,14 @@ const socketHandler = (server) => {
 
         // Game Lobby
         clientSocket.on(constants.INIT_GAME_LOBBY, (sessionId) => {
-            let gameId = gameEnv.clientToGameMapping[sessionId];
-            if (gameId) {
-                let game = gameEnv.allGames[gameId];
+            // let gameId = gameEnv.clientToGameMapping[sessionId];
+            // if (gameId) {
+            //     let game = gameEnv.allGames[gameId];
 
-                clientSocket.join(gameId);
-                let player = gameEnv.session[sessionId];
-                game.players.add(player);
-            }
+            //     clientSocket.join(gameId);
+            //     let player = gameEnv.session[sessionId];
+            //     game.players.add(player);
+            // }
         });
         // automatically join client to a game
         clientSocket.on(constants.JOIN_GAME, (obj) => {

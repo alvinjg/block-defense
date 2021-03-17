@@ -15,10 +15,10 @@ const sockConst = {
 
 let myGameSession = {};
 let myGameSessionKey = "GameSessionID";
-let localSessionId = window.localStorage.getItem(myGameSessionKey);
-
+let localSessionId = null;
 
 (() => {
+    localSessionId = window.localStorage.getItem(myGameSessionKey);
     const clientSocket = io();
 
     let tempGameSession = {};
