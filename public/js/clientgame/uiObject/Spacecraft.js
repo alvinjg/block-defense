@@ -5,6 +5,8 @@ class Spacecraft extends LivingObject {
 
         this._property._x = Math.round(canvas.width / 2);
         this._property._y = Math.floor(canvas.height / 1.2);
+        this._property._target_x = this._property._x;
+        this._property._target_y = this._property._y;
 
         this._moveUpBoundary = Math.floor(canvas.height / 3);
 

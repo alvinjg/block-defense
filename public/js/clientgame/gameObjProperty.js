@@ -14,6 +14,8 @@ class CanvasObjectProperty {
         this._y = 0;
         this._speed_x = 0;
         this._speed_y = 0;
+        this._target_x = this._x;
+        this._target_y = this._y;
         this._radius = 5;
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
     }

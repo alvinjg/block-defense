@@ -17,7 +17,6 @@ class SpacecraftController {
         this._canvasHeight = this._spaceship._canvas.height;
         this._canvasWidth = this._spaceship._canvas.width;
 
-        this._ping = new Date();
         this._isMoved = false;
         this._movementQueue = [];
         this._spaceship._property._upBoundary = this._spaceship._property._radius + Math.floor(this._canvasHeight / 3);
@@ -49,10 +48,19 @@ class SpacecraftController {
                 } else {
                     queue.push(movementObj);
                 }
-            }
 
-            let elapsed = new Date() - this._ping;
-            console.log(`Elapsed time: ${elapsed}ms`);
+                lastmove = queue[queue.length - 1];
+                this._spaceship._property._target_x = lastmove.x;
+                this._spaceship._property._target_y = lastmove.y
+
+                // remove the first 6 movement in the queue
+                if (queue.length > 8) {
+                    queue.splice(0, 6);
+                }
+
+                let elapsed = new Date() - lastmove.timestamp;
+                displayPing(elapsed);
+            }
         });
 
         this._clientSocket.on(sockConst.PLAYER_SHOOTING, (shotObj) => {
@@ -61,6 +69,8 @@ class SpacecraftController {
             let shipSessId = this._spaceship._property._sessionId;
             if (sessId === shipSessId) {
                 this._spaceship.firePrimaryAmmo();
+                let elapsed = new Date() - shotObj.timestamp;
+                displayPing(elapsed);
             }
         });
 
@@ -265,9 +275,34 @@ class SpacecraftController {
         }
     }
 
+    moveSpaceship3() {
+        let xDirection = this._spaceship._property._target_x - this._spaceship._property._x;
+        let yDirection = this._spaceship._property._target_y - this._spaceship._property._y;
+
+
+        if (Math.abs(xDirection) < this._spaceship._property._speed_x) {
+            this._spaceship._property._x += xDirection;
+        } else if (xDirection < 0) {
+            this._spaceship.moveLeft();
+        } else if (xDirection > 0) {
+            this._spaceship.moveRight();
+        }
+
+        if (Math.abs(yDirection) < this._spaceship._property._speed_y) {
+            this._spaceship._property._y += yDirection;
+        } else if (yDirection < 0) {
+            this._spaceship.moveUp();
+        } else if (yDirection > 0) {
+            this._spaceship.moveDown();
+        }
+    }
+
+
+
     control() {
         // this.moveSpaceship();
-        this.moveSpaceship2();
+        // this.moveSpaceship2();
+        this.moveSpaceship3();
 
         let moving = this._isMovingUp || this._isMovingLeft || this._isMovingDown || this._isMovingRight;
         if (moving) {
@@ -300,7 +335,8 @@ class SpacecraftController {
 
             if (elapsed > this._firingCooldown) {
                 let shotObj = {
-                    "sessionId": this._spaceship._property._sessionId
+                    "sessionId": this._spaceship._property._sessionId,
+                    "timestamp": new Date().getTime()
                 };
                 this._clientSocket.emit(sockConst.PLAYER_SHOOTING, shotObj);
                 this._lastFired = current;
@@ -309,11 +345,27 @@ class SpacecraftController {
         }
     }
 
+
+    moveUp() {
+        this._spaceship._property._target_y -= this._spaceship._property._speed_y;
+    }
+
+    moveDown() {
+        this._spaceship._property._target_y += this._spaceship._property._speed_y;
+    }
+
+    moveLeft() {
+        this._spaceship._property._target_x -= this._spaceship._property._speed_x;
+    }
+
+    moveRight() {
+        this._spaceship._property._target_x += this._spaceship._property._speed_x;
+    }
+
     sendPendingMovement() {
         if (this._isMoved) {
             this._newMovement.timestamp = new Date().getTime();
             this._clientSocket.emit(sockConst.MOVE_PLAYER, this._newMovement);
-            this._ping = new Date();
             this._isMoved = false;
         }
     }

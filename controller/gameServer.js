@@ -3,6 +3,7 @@ const gameEnv = require('./gameEnvironment');
 
 const TEAM_TYPE = { "ALLY": 0, "ENEMY": 2 };
 const OBJ_MOVEMENT = {
+    "IDLE": 0,
     "UP": 1,
     "DOWN": 2,
     "LEFT": 3,
@@ -16,6 +17,8 @@ class CanvasObjectProperty {
         this._y = 0;
         this._speed_x = 0;
         this._speed_y = 0;
+        this._target_x = this._x;
+        this._target_y = this._y;
         this._radius = 5;
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
     }
@@ -27,22 +30,72 @@ class LivingObjectProperty extends CanvasObjectProperty {
         this._fullLife = 100;
         this._currentLife = 100;
         this._team = TEAM_TYPE.ALLY;
+        this._upBoundary = null;
+        this._downBoundary = null;
+        this._leftBoundary = null;
+        this._rightBoundary = null;
     }
 
-    moveLeft() {
-        return this._property._x - this._property._speed_x;
+    moveToX(currentX, direction) {
+        if (direction === OBJ_MOVEMENT.LEFT) {
+            return this.moveLeft();
+        } else if (direction === OBJ_MOVEMENT.RIGHT) {
+            return this.moveRight();
+        }
+        return currentX;
     }
 
-    moveRight() {
-        return this._property._x + this._property._speed_x;
+    moveToY(currentY, direction) {
+        if (direction === OBJ_MOVEMENT.UP) {
+            return this.moveUp();
+        } else if (direction === OBJ_MOVEMENT.DOWN) {
+            return this.moveDown();
+        }
+        return currentY;
     }
 
-    moveUp() {
-        return this._property._y - this._property._speed_y;
+    moveLeft(currentX = this._x, boundary = this._leftBoundary) {
+        let newPos = currentX - this._speed_x;
+        if (boundary !== null) {
+            let bounds = boundary + this._totalRadius;
+            if (newPos < bounds) {
+                newPos = bounds;
+            }
+        }
+        return newPos;
     }
 
-    moveDown() {
-        return this._property._y + this._property._speed_y;
+    moveRight(currentX = this._x, boundary = this._rightBoundary) {
+        let newPos = currentX + this._speed_x;
+        if (boundary !== null) {
+            let bounds = boundary - this._totalRadius;
+            if (newPos > bounds) {
+                newPos = bounds;
+            }
+        }
+        return newPos;
+    }
+
+    moveUp(currentY = this._y, boundary = this._upBoundary) {
+        let newPos = currentY - this._speed_y;
+        if (boundary !== null) {
+            let bounds = boundary + this._totalRadius;
+            if (newPos < bounds) {
+                newPos = bounds;
+            }
+        }
+        return newPos;
+    }
+
+    moveDown(currentY = this._y, boundary = this._downBoundary) {
+        let newPos = currentY + this._speed_y;
+        if (boundary !== null) {
+            let bounds = boundary - this._totalRadius;
+            if (newPos > bounds) {
+                newPos = bounds;
+            }
+        }
+        return newPos;
     }
 }
 

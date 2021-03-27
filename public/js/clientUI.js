@@ -6,6 +6,7 @@ const createGameForm = document.querySelector("#createGameForm");
 const joinGameForm = document.querySelector("#joinGameForm");
 const startGame = document.querySelector("#startGame");
 const playerContainer = document.querySelector(".team-container .players");
+const pingNum = document.querySelector("#ping span:first-child");
 
 
 function setHome_display() {
@@ -90,5 +91,23 @@ function setLobby_removeAllPlayerTile() {
 function setGamePage_display() {
     if (gamePageBody) {
         gamePageBody.querySelector(".container").classList.remove("d-none");
+    }
+}
+
+function displayPing(pingMs) {
+    if (pingNum) {
+        pingNum.className = "";
+
+        if(pingMs < 100){
+            pingNum.classList.add("green");
+        }else if(pingMs < 200){
+            pingNum.classList.add("amber");
+        }else{
+            pingNum.classList.add("red");
+        }
+        if(pingMs > 999){
+            pingMs = 999;
+        }
+        pingNum.innerHTML = pingMs + "ms";
     }
 }
