@@ -34,7 +34,11 @@ const gameEnv = {
             "leaderId": null,
             "spacecrafts": new Map(),
             "asteroids": [],
-            "asteroidControllers": []
+            "asteroidControllers": [],
+            "canvasInfo": {
+                "width": 800,
+                "height": 600
+            }
         };
     }
 };

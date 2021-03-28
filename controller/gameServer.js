@@ -159,6 +159,8 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._color = '#0d1d38';
         this._firedAmmos = [];
         this._sessionId = null; // session of player
+        this._strokeWidth = 10;
+        this._totalRadius = this._radius + Math.floor(this._strokeWidth / 2);
     }
 }
 
@@ -176,16 +178,31 @@ const gameServer = (io, clientSocket) => {
                 if (game.canvasData === null || game.canvasData === undefined) {
                     gameCanvasData = gameEnv.gameCanvasTemplate();
                     gameCanvasData.leaderId = game.leader;
-                    game.canvasData = gameCanvasData;
+                    let canvas = gameCanvasData.canvasInfo;
 
+                    let startX = Math.round(canvas.width / 5);
+                    let startY = Math.floor(canvas.height / 1.2);
+
+                    let ctr = 1;
                     for (let player of game.players) {
                         let spacecraftProp = new SpacecraftProperty();
                         spacecraftProp._sessionId = player.id;
                         spacecraftProp._color = player.color;
 
+                        // start position of player in canvas
+                        let tempStartX = startX + (((spacecraftProp._totalRadius * 2) + 5) * ctr);
+                        let xBoundary = canvas.width - spacecraftProp._totalRadius;
+                        if (tempStartX > xBoundary) {
+                            tempStartX = xBoundary
+                        }
+                        spacecraftProp._x = tempStartX;
+                        spacecraftProp._y = startY;
+
                         gameCanvasData.spacecrafts.set(player.id, spacecraftProp);
+                        ctr++;
                     }
 
+                    game.canvasData = gameCanvasData;
                 } else {
                     gameCanvasData = game.canvasData;
                 }

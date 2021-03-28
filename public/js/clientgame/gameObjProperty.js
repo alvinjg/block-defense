@@ -156,5 +156,7 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._color = '#0d1d38';
         this._firedAmmos = [];
         this._sessionId = null; // session of player
+        this._strokeWidth = 10;
+        this._totalRadius = this._radius + Math.floor(this._strokeWidth/2);
     }
 }
