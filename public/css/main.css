@@ -46,3 +46,20 @@ div.spacer {
 #gamePanel .player{
     margin-bottom: 0.3rem;
 }
+
+#ping {
+    font-size: 0.7rem;
+    text-align: left;
+}
+
+#ping .green{
+    color: rgb(98, 224, 98);
+}
+
+#ping .amber{
+    color:rgb(238, 238, 98);
+}
+
+#ping .red{
+    color: rgb(236, 91, 91);
+}

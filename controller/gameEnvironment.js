@@ -17,7 +17,8 @@ const gameEnv = {
             "gameID": 0,
             "dateCreated": 0,
             "players": new Set(),
-            "isStarted": false
+            "isStarted": false,
+            "canvasData": undefined
         };
     },
     sessionTemplate: function () {
@@ -30,7 +31,8 @@ const gameEnv = {
     },
     gameCanvasTemplate: function () {
         return {
-            "spacecrafts": [],
+            "leaderId": null,
+            "spacecrafts": new Map(),
             "asteroids": [],
             "asteroidControllers": []
         };

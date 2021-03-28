@@ -4,33 +4,24 @@ class LivingObject extends CanvasObject {
         this._property = property;
     }
 
-    
+
     moveLeft() {
-        let x = this._property._x - this._property._speed_x;
-        if (x > this._property._totalRadius) {
-            this._property._x = x;
-        }
+        let x = this._property.moveLeft();
+        this._property._x = x;
     }
 
     moveRight() {
-        let x = this._property._x + this._property._speed_x;
-        if (x < this._canvas.width - this._property._totalRadius) {
-            this._property._x = x;
-        }
+        let x = this._property.moveRight();
+        this._property._x = x;
     }
 
     moveUp() {
-        let y = this._property._y - this._property._speed_y;
-
-        if (y > this._property._radius + this._property._totalRadius) {
-            this._property._y = y;
-        }
+        let y = this._property.moveUp();
+        this._property._y = y;
     }
 
     moveDown() {
-        let y = this._property._y + this._property._speed_y;
-        if (y < this._canvas.height - this._property._totalRadius) {
-            this._property._y = y;
-        }
+        let y = this._property.moveDown();
+        this._property._y = y;
     }
 }

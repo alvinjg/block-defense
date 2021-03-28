@@ -3,7 +3,6 @@ class ClientGameController {
         this._canvas = canvas;
         this._gameModel = gameModel;
 
-        this.createEnemy();
     }
 
     // create intial enemy units
@@ -29,6 +28,14 @@ class ClientGameController {
         controllers.forEach(function (controller) {
             controller.control();
         });
+    }
+
+    sendModelObjectMovement() {
+        // move spacecrafts
+        let controllers = this._gameModel.spacecraftControllers.values();
+        for (let controller of controllers) {
+            controller.sendPendingMovement();
+        }
     }
 
 

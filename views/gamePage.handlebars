@@ -6,6 +6,7 @@
                 <canvas id="game-canvas" class="mx-auto" width="800" height="600" style="width: 800px; height: 600px;">
 
                 </canvas>
+                <div id="ping">Ping: <span class="green">1ms</span></div>
             </div>
             <div id="gamePanel" class="col-lg-3">
                 <h2 class="text-center">{{gameObj.teamName}}</h2>
@@ -17,6 +18,7 @@
             </div>
         </div>
     </div>
+    <script src="/js/clientgame/clientGameUtil.js"></script>
     <script src="/js/clientgame/gameObjProperty.js"></script>
     <script src="/js/clientgame/uiObject/CanvasObject.js"></script>
     <script src="/js/clientgame/uiObject/LivingObject.js"></script>
@@ -27,5 +29,5 @@
     <script src="/js/clientgame/controller/SpacecraftController.js"></script>
     <script src="/js/clientgame/controller/AsteroidController.js"></script>
     <script src="/js/clientgame/CanvasPainter.js"></script>
-    <script src="/js/clientgame/gamePageClient.js"></script>
+    <script src="/js/clientgame/clientGamePage.js" defer></script>
 </body>
