@@ -146,136 +146,8 @@ class SpacecraftController {
         }
     }
 
-    // actual movement of spaceship
+    // actual movement of spaceship in canvas
     moveSpaceship() {
-        if (this._pendingMovement !== null && !this._pendingMovement.completed) {
-            let targetX = this._pendingMovement.x;
-            let targetY = this._pendingMovement.y;
-            let currX = this._spaceship._property._x;
-            let currY = this._spaceship._property._y;
-            let allowanceX = this._spaceship._property._speed_x;
-            let allowanceY = this._spaceship._property._speed_y;
-            let direction = this._pendingMovement.direction;
-
-            let onTarget = (targetPoint, currentPoint, allowance) => {
-                let distance = Math.abs(targetPoint - currentPoint);
-                if (targetPoint == currentPoint) {
-                    return true;
-                }
-                return false;
-            };
-
-            if (direction) {
-                let onTargetX = onTarget(targetX, currX, allowanceX);
-                let onTargetY = onTarget(targetY, currY, allowanceY);
-
-                if (direction === OBJ_MOVEMENT.UP) {
-                    if (!onTargetY) {
-                        this._spaceship.moveUp();
-                    }
-                }
-                if (direction === OBJ_MOVEMENT.LEFT) {
-                    if (!onTargetX) {
-                        this._spaceship.moveLeft();
-                    }
-                }
-                if (direction === OBJ_MOVEMENT.DOWN) {
-                    if (!onTargetY) {
-                        this._spaceship.moveDown();
-                    }
-                }
-                if (direction === OBJ_MOVEMENT.RIGHT) {
-                    if (!onTargetX) {
-                        this._spaceship.moveRight();
-                    }
-                }
-
-                if (onTargetX && onTargetY) {
-                    this._pendingMovement.completed = true;
-                }
-            }
-        }
-    }
-
-    moveSpaceship2() {
-        let queue = this._movementQueue;
-
-        if (queue.length > 0) {
-            let indx = queue.length - 1;
-            queue.find((element, index) => {
-                if (element === this._pendingMovement) {
-                    indx = index;
-                    return true;
-                }
-            });
-
-            let nextMove = queue[indx];
-            if (!nextMove.completed) {
-
-                let direction = nextMove.direction;
-                let point = null;
-
-                // TODO: Interpoate for diagonal movement
-                // let x1 = this._spaceship._property._x;
-                // let y1 = this._spaceship._property._y;
-                // let x2 = (nextMove) ? nextMove.x : this._spaceship._property._x;
-                // let y2 = (nextMove) ? nextMove.y : this._spaceship._property._y;
-                // let queryX = this._spaceship._property.moveToX(x1, direction);
-                // let queryY = this._spaceship._property.moveToY(y1, direction);
-                // if (queue.length > 1) {
-                //     // find poit for diagonal movement
-                //     point = findPointOfLine(x1, y1, x2, y2, queryX, queryY);
-                // } else {
-                //     point = {
-                //         "x": queryX,
-                //         "y": queryY
-                //     };
-                // }
-                // this._spaceship._property._x = point.x;
-                // this._spaceship._property._y = point.y;
-
-                if (direction === OBJ_MOVEMENT.UP) {
-                    this._spaceship.moveUp();
-                } else if (direction === OBJ_MOVEMENT.DOWN) {
-                    this._spaceship.moveDown();
-                } else if (direction === OBJ_MOVEMENT.LEFT) {
-                    this._spaceship.moveLeft();
-                } else if (direction === OBJ_MOVEMENT.RIGHT) {
-                    this._spaceship.moveRight();
-                }
-
-                point = {
-                    "x": this._spaceship._property._x,
-                    "y": this._spaceship._property._y
-                };
-
-                if (((direction === OBJ_MOVEMENT.LEFT && point.x <= this._pendingMovement.x) ||
-                    (direction === OBJ_MOVEMENT.RIGHT && point.x >= this._pendingMovement.x)) ||
-                    (direction === OBJ_MOVEMENT.UP && point.y <= this._pendingMovement.y) ||
-                    (direction === OBJ_MOVEMENT.DOWN && point.y >= this._pendingMovement.y)) {
-                    this._pendingMovement.completed = true;
-                }
-            }
-        }
-
-        this._spaceship.draw();
-
-        if (queue.length > 0) {
-            for (let i = 0; i < queue.length; i++) {
-                let movement = queue[i];
-                if (movement.completed) {
-                    if (queue.length > 2) {
-                        queue.splice(i, 1);
-                    }
-                } else {
-                    this._pendingMovement = movement;
-                    break;
-                }
-            }
-        }
-    }
-
-    moveSpaceship3() {
         let xDirection = this._spaceship._property._target_x - this._spaceship._property._x;
         let yDirection = this._spaceship._property._target_y - this._spaceship._property._y;
 
@@ -300,9 +172,7 @@ class SpacecraftController {
 
 
     control() {
-        // this.moveSpaceship();
-        // this.moveSpaceship2();
-        this.moveSpaceship3();
+        this.moveSpaceship();
 
         let moving = this._isMovingUp || this._isMovingLeft || this._isMovingDown || this._isMovingRight;
         if (moving) {
@@ -343,23 +213,6 @@ class SpacecraftController {
             }
 
         }
-    }
-
-
-    moveUp() {
-        this._spaceship._property._target_y -= this._spaceship._property._speed_y;
-    }
-
-    moveDown() {
-        this._spaceship._property._target_y += this._spaceship._property._speed_y;
-    }
-
-    moveLeft() {
-        this._spaceship._property._target_x -= this._spaceship._property._speed_x;
-    }
-
-    moveRight() {
-        this._spaceship._property._target_x += this._spaceship._property._speed_x;
     }
 
     sendPendingMovement() {

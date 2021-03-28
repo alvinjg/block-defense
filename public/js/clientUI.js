@@ -98,9 +98,9 @@ function displayPing(pingMs) {
     if (pingNum) {
         pingNum.className = "";
 
-        if(pingMs < 100){
+        if(pingMs < 300){
             pingNum.classList.add("green");
-        }else if(pingMs < 200){
+        }else if(pingMs < 400){
             pingNum.classList.add("amber");
         }else{
             pingNum.classList.add("red");
