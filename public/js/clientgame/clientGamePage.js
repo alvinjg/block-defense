@@ -52,7 +52,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
             // interval for sending movement of objects to server
             userControlIntervalId = setInterval(() => {
                 gameController.sendModelObjectMovement();
-            }, 30);
+            }, 100);
 
             // control only the client spacecraft
             document.addEventListener('keydown', (event) => {
