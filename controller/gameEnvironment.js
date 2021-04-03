@@ -18,6 +18,7 @@ const gameEnv = {
             "dateCreated": 0,
             "players": new Set(),
             "isStarted": false,
+            "isRunning": false,
             "canvasData": undefined
         };
     },
@@ -34,7 +35,6 @@ const gameEnv = {
             "leaderId": null,
             "spacecrafts": new Map(),
             "asteroids": [],
-            "asteroidControllers": [],
             "canvasInfo": {
                 "width": 800,
                 "height": 600

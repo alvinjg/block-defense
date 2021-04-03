@@ -1,8 +1,44 @@
 class ClientGameController {
-    constructor(canvas, gameModel) {
+    constructor(canvas, clientSocket, gameModel) {
         this._canvas = canvas;
+        this._clientSocket = clientSocket;
         this._gameModel = gameModel;
 
+    }
+
+    initialize(gameData){
+        let canvas = this._canvas;
+        let clientSocket = this._clientSocket;
+        let gameModel = this._gameModel;
+
+        for (let spacecraftData of gameData.spacecrafts) {
+            // copy spacecraftData to property object
+            let spaceshipProp = new SpacecraftProperty();
+            for(let key in spacecraftData){
+                spaceshipProp[key] = spacecraftData[key];
+            }
+
+            let spaceship1 = new Spacecraft(canvas, spaceshipProp);
+            let cont = new SpacecraftController(spaceship1, clientSocket);
+
+            let id = spaceship1._property._sessionId;
+            gameModel.spacecrafts.set(id, spaceship1);
+            gameModel.spacecraftControllers.set(id, cont);
+        }
+
+        for (let asteroidData of gameData.asteroids) {
+            // copy asteroidData to property object
+            let asteroidProp = new AsteroidProperty();
+            for(let key in asteroidData){
+                asteroidProp[key] = asteroidData[key];
+            }
+
+            let asteroid = new Asteroid(canvas, asteroidProp);
+            let cont = new AsteroidController(asteroid, clientSocket);
+
+            gameModel.asteroids.push(asteroid);
+            gameModel.asteroidControllers.push(cont);
+        }
     }
 
     // create intial enemy units

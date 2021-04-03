@@ -1,6 +1,6 @@
 class AsteroidController {
 
-    constructor(asteroid) {
+    constructor(asteroid, clientSocket) {
         this._asteroid = asteroid;
         this._asteroid._controller = this;
 
