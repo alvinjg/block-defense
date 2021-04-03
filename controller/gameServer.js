@@ -49,7 +49,9 @@ const gameServer = (io, clientSocket) => {
 
                 clientSocket.join(game.gameID);
 
-                gameCtrlFactory.createController(clientSocket, game);
+                gameCtrlFactory.createController(io, game);
+                gameCtrlFactory.initializeController(game.gameID);
+                gameCtrlFactory.runController(game.gameID);
 
                 let canvasDataCopy = JSON.parse(JSON.stringify(gameCanvasData));
                 canvasDataCopy.spacecrafts = Array.from(gameCanvasData.spacecrafts.values());

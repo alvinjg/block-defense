@@ -6,7 +6,7 @@ class ClientGameController {
 
     }
 
-    initialize(gameData){
+    initialize(gameData) {
         let canvas = this._canvas;
         let clientSocket = this._clientSocket;
         let gameModel = this._gameModel;
@@ -14,7 +14,7 @@ class ClientGameController {
         for (let spacecraftData of gameData.spacecrafts) {
             // copy spacecraftData to property object
             let spaceshipProp = new SpacecraftProperty();
-            for(let key in spacecraftData){
+            for (let key in spacecraftData) {
                 spaceshipProp[key] = spacecraftData[key];
             }
 
@@ -29,7 +29,7 @@ class ClientGameController {
         for (let asteroidData of gameData.asteroids) {
             // copy asteroidData to property object
             let asteroidProp = new AsteroidProperty();
-            for(let key in asteroidData){
+            for (let key in asteroidData) {
                 asteroidProp[key] = asteroidData[key];
             }
 
@@ -80,6 +80,7 @@ class ClientGameController {
     asteroidIsHit() {
         let asteroids = this._gameModel.asteroids;
         let controllers = this._gameModel.asteroidControllers;
+        let clientControllerObj = this;
 
         for (let j = 0; j < asteroids.length; j++) {
             let asteroid = asteroids[j];
@@ -99,6 +100,7 @@ class ClientGameController {
                             let i = controllers.findIndex((element) => element === asteroid._controller);
                             controllers.splice(i, 1);
                         }
+                        clientControllerObj._clientSocket.emit(sockConst.ASTEROID_DESTROYED, asteroid._id);
                     }
                 }
             });

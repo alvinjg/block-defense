@@ -2,11 +2,16 @@ class Asteroid extends LivingObject {
     constructor(canvas, property) {
         super(canvas, property);
         this._property = property;
-        this._property._x = Math.floor(canvas.width / 2) - Math.floor(this._property._width / 2);
-        this._property._y = 20;
+
+        if (!property) {
+            this._property._x = Math.floor(canvas.width / 2) - Math.floor(this._property._width / 2);
+            this._property._y = 20;
+        }
+
+        this._property._target_x = this._property._x;
+        this._property._target_y = this._property._y;
 
         this._startRadius = this._property._radius;
-
         this._lastHitTime = new Date();
     }
 

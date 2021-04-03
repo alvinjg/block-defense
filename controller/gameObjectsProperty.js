@@ -11,6 +11,7 @@ const OBJ_MOVEMENT = {
 class CanvasObjectProperty {
 
     constructor() {
+        this._id = 0;
         this._x = 0;
         this._y = 0;
         this._speed_x = 0;

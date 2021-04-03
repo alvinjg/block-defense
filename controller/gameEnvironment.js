@@ -19,6 +19,7 @@ const gameEnv = {
             "players": new Set(),
             "isStarted": false,
             "isRunning": false,
+            "runningSince": 0,
             "canvasData": undefined
         };
     },
