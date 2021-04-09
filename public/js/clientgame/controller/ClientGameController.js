@@ -27,17 +27,7 @@ class ClientGameController {
         }
 
         for (let asteroidData of gameData.asteroids) {
-            // copy asteroidData to property object
-            let asteroidProp = new AsteroidProperty();
-            for (let key in asteroidData) {
-                asteroidProp[key] = asteroidData[key];
-            }
-
-            let asteroid = new Asteroid(canvas, asteroidProp);
-            let cont = new AsteroidController(asteroid, clientSocket);
-
-            gameModel.asteroids.set(asteroid._property._id, asteroid);
-            gameModel.asteroidControllers.set(asteroid._property._id, cont);
+            this.createAsteroid(asteroidData);
         }
 
         this.initServerEvents();
@@ -45,20 +35,34 @@ class ClientGameController {
 
     // respond from the events send from the server
     initServerEvents() {
+        let clientControllerObj = this;
+
         this._clientSocket.on(sockConst.ASTEROID_DESTROYED, (asteroidId) => {
             this.deleteAsteroid(asteroidId);
         });
+        this._clientSocket.on(sockConst.NEW_ENEMY_ATTACK, (enemyGroup) => {
+            enemyGroup = JSON.parse(enemyGroup);
+            enemyGroup.asteroids.forEach(function(value){
+                clientControllerObj.createAsteroid(value);
+            });
+        });
     }
 
-    // create intial enemy units
-    createEnemy() {
+    // create an Asteroid that the player will fight. The created Asteroid and its controller is added to the game model.
+    createAsteroid(asteroidData) {
         let canvas = this._canvas;
         let astProp = new AsteroidProperty();
-        let ast1 = new Asteroid(canvas, astProp);
-        let cont = new AsteroidController(ast1);
 
-        this._gameModel.asteroids.push(ast1);
-        this._gameModel.asteroidControllers.push(cont);
+        // copy asteroidData to property object
+        for (let key in asteroidData) {
+            astProp[key] = asteroidData[key];
+        }
+
+        let asteroid = new Asteroid(canvas, astProp);
+        let cont = new AsteroidController(asteroid, this._clientSocket);
+
+        this._gameModel.asteroids.set(asteroid._property._id, asteroid);
+        this._gameModel.asteroidControllers.set(asteroid._property._id, cont);
     }
 
     moveModelObjects() {

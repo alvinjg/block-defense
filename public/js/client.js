@@ -15,7 +15,8 @@ const sockConst = {
     MOVE_PLAYER: 14,
     PLAYER_SHOOTING: 15,
     MOVE_ASTEROID: 16,
-    ASTEROID_DESTROYED: 17
+    ASTEROID_DESTROYED: 17,
+    NEW_ENEMY_ATTACK: 18
 };
 
 const startGameButton = document.querySelector("#startGameButton");

@@ -1,7 +1,42 @@
 const obj = require("./gameObjectsProperty");
 const constants = require('./socketConstants');
 const uuid = require('uuid');
+const gameEnv = require('./gameEnvironment');
 
+// List of enemies that will fight the players. Returns array of enemy object to be sent to the players at specific time.
+const newEnemyList = function(){
+    let canvasInfo= gameEnv.gameCanvasTemplate().canvasInfo;
+
+    let newGroup = function(){
+        return {
+            attackTime: 3000,
+            asteroids: []   
+        };
+    };
+
+    let newAsteroid = function(){
+        let astProp = new obj.AsteroidProperty();
+        astProp._id = uuid.v4();
+
+        astProp._x = Math.floor(canvasInfo.width / 2) - Math.floor(astProp._width / 2);
+        astProp._y = 20;
+
+        return astProp;
+    };
+
+    let asteroid = null;
+
+    let group1 = newGroup();
+    group1.attackTime = 5000;
+    asteroid = newAsteroid();
+    asteroid._x -= 20;
+    group1.asteroids.push(asteroid); 
+
+
+    return [
+        group1
+    ];
+};
 
 class AIGameController {
     constructor(io, game) {
@@ -9,6 +44,7 @@ class AIGameController {
         this._io = io;
         this._gameID = game.gameID;
         this._canvasData = this._game.canvasData;
+        this._enemyList = newEnemyList();
     }
 
     runController() {
@@ -24,8 +60,10 @@ class AIGameController {
     run() {
         let elapsed = new Date().getTime() - this._game.runningSince;
 
-        if (elapsed > 3000) {
-            this.sendMoveAsteroid();
+        let nextEnemyGroup = this._enemyList[0];
+        if (nextEnemyGroup && nextEnemyGroup.attackTime < elapsed) {
+            this._io.to(this._gameID).emit(constants.NEW_ENEMY_ATTACK, JSON.stringify(nextEnemyGroup));
+            this._enemyList.splice(0,1); // remove the enemy group that already sent
         }
     }
 
@@ -40,6 +78,8 @@ class AIGameController {
         this._canvasData.asteroids.set(astProp._id, astProp);
     }
 
+    
+    // sends the next position of an Asteroid to the clients.
     sendMoveAsteroid() {
         let asteroid = this._canvasData.asteroids.values().next().value;
         if (asteroid) {
@@ -94,7 +134,7 @@ class GameControllerFactory {
     initializeController(gameID) {
         let gController = this._controllerMap.get(gameID);
         if (gController) {
-            gController.createAsteroid();
+            // gController.createAsteroid();
         }
     }
 
