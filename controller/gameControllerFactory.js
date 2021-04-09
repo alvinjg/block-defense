@@ -1,42 +1,7 @@
 const obj = require("./gameObjectsProperty");
 const constants = require('./socketConstants');
 const uuid = require('uuid');
-const gameEnv = require('./gameEnvironment');
-
-// List of enemies that will fight the players. Returns array of enemy object to be sent to the players at specific time.
-const newEnemyList = function(){
-    let canvasInfo= gameEnv.gameCanvasTemplate().canvasInfo;
-
-    let newGroup = function(){
-        return {
-            attackTime: 3000,
-            asteroids: []   
-        };
-    };
-
-    let newAsteroid = function(){
-        let astProp = new obj.AsteroidProperty();
-        astProp._id = uuid.v4();
-
-        astProp._x = Math.floor(canvasInfo.width / 2) - Math.floor(astProp._width / 2);
-        astProp._y = 20;
-
-        return astProp;
-    };
-
-    let asteroid = null;
-
-    let group1 = newGroup();
-    group1.attackTime = 5000;
-    asteroid = newAsteroid();
-    asteroid._x -= 20;
-    group1.asteroids.push(asteroid); 
-
-
-    return [
-        group1
-    ];
-};
+const enemySets = require('./enemySets');
 
 class AIGameController {
     constructor(io, game) {
@@ -44,7 +9,7 @@ class AIGameController {
         this._io = io;
         this._gameID = game.gameID;
         this._canvasData = this._game.canvasData;
-        this._enemyList = newEnemyList();
+        this._enemyList = enemySets();
     }
 
     runController() {

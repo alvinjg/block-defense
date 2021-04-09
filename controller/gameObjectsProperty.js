@@ -7,6 +7,9 @@ const OBJ_MOVEMENT = {
     "LEFT": 3,
     "RIGHT": 4
 };
+const MOVEMENT_TYPE = {
+    "DOWN": 0
+};
 
 class CanvasObjectProperty {
 
@@ -20,6 +23,7 @@ class CanvasObjectProperty {
         this._target_y = this._y;
         this._radius = 5;
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
+        this._movementType = MOVEMENT_TYPE.DOWN;
     }
 }
 
@@ -134,6 +138,7 @@ class AsteroidProperty extends LivingObjectProperty {
         super();
         this._fullLife = 5000;
         this._currentLife = this._fullLife;
+        this._team = TEAM_TYPE.ENEMY;
         this._radius = 50;
         this._speed_x = 0.1;
         this._speed_y = 0.5;

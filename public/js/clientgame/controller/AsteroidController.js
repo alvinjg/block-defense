@@ -8,7 +8,7 @@ class AsteroidController {
         this._moveXCooldown = 100;
         this._lastMoveX = new Date();
 
-        this._clientSocket.on(sockConst.MOVE_ASTEROID, (movementObj)=>{
+        this._clientSocket.on(sockConst.MOVE_ASTEROID, (movementObj) => {
             movementObj = JSON.parse(movementObj);
 
             this._asteroid._property._target_x = movementObj.x;
@@ -42,6 +42,10 @@ class AsteroidController {
     control() {
         if (this._asteroid !== undefined || this._asteroid !== null) {
             this.moveAsteroid();
+        }
+
+        if (MOVEMENT_TYPE.DOWN === this._asteroid._property._movementType) {
+            this._asteroid._property._target_y = this._asteroid._canvas.height + 20;
         }
     }
 
