@@ -35,7 +35,7 @@ const gameEnv = {
         return {
             "leaderId": null,
             "spacecrafts": new Map(),
-            "asteroids": [],
+            "asteroids": new Map(),
             "canvasInfo": {
                 "width": 800,
                 "height": 600

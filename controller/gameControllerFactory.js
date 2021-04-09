@@ -1,5 +1,6 @@
 const obj = require("./gameObjectsProperty");
 const constants = require('./socketConstants');
+const uuid = require('uuid');
 
 
 class AIGameController {
@@ -8,19 +9,6 @@ class AIGameController {
         this._io = io;
         this._gameID = game.gameID;
         this._canvasData = this._game.canvasData;
-
-        let room = this._io.sockets.in(this._gameID);
-        room.on(constants.ASTEROID_DESTROYED, (asteroidId) => {
-            let asteroids = this._canvasData.asteroids;
-            for (let i = 0; i < asteroids.length; i++) {
-                let asteroid = asteroids[i];
-                console.log(i);
-                if (asteroid._id === asteroidId) {
-                    console.log("deleted");
-                    asteroids.splice(i, 1);
-                }
-            }
-        });
     }
 
     runController() {
@@ -36,29 +24,32 @@ class AIGameController {
     run() {
         let elapsed = new Date().getTime() - this._game.runningSince;
 
-        if (elapsed > 3000 && elapsed < 4000) {
+        if (elapsed > 3000) {
             this.sendMoveAsteroid();
         }
     }
 
     createAsteroid() {
         let astProp = new obj.AsteroidProperty();
+        astProp._id = uuid.v4();
 
         let canvas = this._canvasData.canvasInfo;
         astProp._x = Math.floor(canvas.width / 2) - Math.floor(astProp._width / 2);
         astProp._y = 20;
 
-        this._canvasData.asteroids.push(astProp);
+        this._canvasData.asteroids.set(astProp._id, astProp);
     }
 
     sendMoveAsteroid() {
-        let asteroid = this._canvasData.asteroids[0];
-        let move = this.createAsteroidMovement();
-        move.id = asteroid._id;
-        move.x = asteroid._x + 150;
-        move.y = this._canvasData.canvasInfo.height + 20;
+        let asteroid = this._canvasData.asteroids.values().next().value;
+        if (asteroid) {
+            let move = this.createAsteroidMovement();
+            move.id = asteroid._id;
+            move.x = asteroid._x + 150;
+            move.y = this._canvasData.canvasInfo.height + 20;
 
-        this._io.to(this._gameID).emit(constants.MOVE_ASTEROID, JSON.stringify(move));
+            this._io.to(this._gameID).emit(constants.MOVE_ASTEROID, JSON.stringify(move));
+        }
     }
 
     createAsteroidMovement() {
@@ -69,20 +60,37 @@ class AIGameController {
             "timestamp": new Date().getTime()
         };
     }
+
+    // delete asteroid from the Game Canvas
+    deleteAsteroid(asteroidId) {
+        let asteroid = this._canvasData.asteroids.get(asteroidId);
+
+        if (asteroid && asteroid._id === asteroidId) {
+            this._canvasData.asteroids.delete(asteroidId);
+            this._io.in(this._gameID).emit(constants.ASTEROID_DESTROYED, asteroidId);
+        }
+    }
 }
 
+
+/** 
+ * The factory for Game Controller. Each Game has its own controller which is responsible 
+ * for sending the enemy to the players of a single game.
+ */
 class GameControllerFactory {
     constructor() {
         this._controllerMap = new Map();
     }
 
+    // Creation of Server Game Controller of the newly created game.
     createController(io, game) {
-        if (!game.isRunning || this._controllerMap.has(game.gameID)) {
+        if (!game.isRunning || !this._controllerMap.has(game.gameID)) {
             let gameController = new AIGameController(io, game);
             this._controllerMap.set(game.gameID, gameController);
         }
     }
 
+    // Initialize the Server Game Controller of the game.
     initializeController(gameID) {
         let gController = this._controllerMap.get(gameID);
         if (gController) {
@@ -90,12 +98,20 @@ class GameControllerFactory {
         }
     }
 
-
+    // Runs the controller bound with the game ID
     runController(gameID) {
         let gController = this._controllerMap.get(gameID);
         if (gController) {
             gController.runController();
         }
+    }
+
+    // Attach the socket of client to its designated Game Controller. This method notifies the Game Controller from any events coming from the client.
+    attachSocketToController(clientSocket, gameID) {
+        let gController = this._controllerMap.get(gameID);
+        clientSocket.on(constants.ASTEROID_DESTROYED, (asteroidId) => {
+            gController.deleteAsteroid(asteroidId);
+        });
     }
 };
 

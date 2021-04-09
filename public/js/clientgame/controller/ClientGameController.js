@@ -36,9 +36,18 @@ class ClientGameController {
             let asteroid = new Asteroid(canvas, asteroidProp);
             let cont = new AsteroidController(asteroid, clientSocket);
 
-            gameModel.asteroids.push(asteroid);
-            gameModel.asteroidControllers.push(cont);
+            gameModel.asteroids.set(asteroid._property._id, asteroid);
+            gameModel.asteroidControllers.set(asteroid._property._id, cont);
         }
+
+        this.initServerEvents();
+    }
+
+    // respond from the events send from the server
+    initServerEvents() {
+        this._clientSocket.on(sockConst.ASTEROID_DESTROYED, (asteroidId) => {
+            this.deleteAsteroid(asteroidId);
+        });
     }
 
     // create intial enemy units
@@ -79,11 +88,9 @@ class ClientGameController {
     // check if asteroid is hit
     asteroidIsHit() {
         let asteroids = this._gameModel.asteroids;
-        let controllers = this._gameModel.asteroidControllers;
         let clientControllerObj = this;
 
-        for (let j = 0; j < asteroids.length; j++) {
-            let asteroid = asteroids[j];
+        for (let asteroid of asteroids.values()) {
 
             this.spaceshipBulletHits(function (ammo, indx, ammos) {
                 let collided = asteroid.isCollided(ammo._x, ammo._y, ammo._radius);
@@ -93,14 +100,8 @@ class ClientGameController {
                     indx--;
                     // asteroid is destroyed
                     if (asteroid._property._currentLife <= 0) {
-                        asteroids.splice(j, 1);
-
-                        // if asteroid has controller delete it
-                        if (asteroid._controller) {
-                            let i = controllers.findIndex((element) => element === asteroid._controller);
-                            controllers.splice(i, 1);
-                        }
-                        clientControllerObj._clientSocket.emit(sockConst.ASTEROID_DESTROYED, asteroid._id);
+                        clientControllerObj._clientSocket.emit(sockConst.ASTEROID_DESTROYED, asteroid._property._id);
+                        clientControllerObj.deleteAsteroid(asteroid._property._id);
                     }
                 }
             });
@@ -127,5 +128,10 @@ class ClientGameController {
         let yDistance = Math.abs(y2 - y1);
 
         return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    }
+
+    deleteAsteroid(asteroidId) {
+        this._gameModel.asteroids.delete(asteroidId);
+        this._gameModel.asteroidControllers.delete(asteroidId);
     }
 }

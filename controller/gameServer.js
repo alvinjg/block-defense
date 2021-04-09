@@ -43,18 +43,25 @@ const gameServer = (io, clientSocket) => {
                     }
 
                     game.canvasData = gameCanvasData;
+
+                    // Create a Server Game Controller for the created Game.
+                    gameCtrlFactory.createController(io, game);
+                    gameCtrlFactory.initializeController(game.gameID);
+                    gameCtrlFactory.runController(game.gameID);
                 } else {
                     gameCanvasData = game.canvasData;
                 }
 
                 clientSocket.join(game.gameID);
 
-                gameCtrlFactory.createController(io, game);
-                gameCtrlFactory.initializeController(game.gameID);
-                gameCtrlFactory.runController(game.gameID);
+                // attach client to notify its game controller from any events
+                gameCtrlFactory.attachSocketToController(clientSocket, game.gameID);
 
                 let canvasDataCopy = JSON.parse(JSON.stringify(gameCanvasData));
+                // Convert Maps to Array
                 canvasDataCopy.spacecrafts = Array.from(gameCanvasData.spacecrafts.values());
+                canvasDataCopy.asteroids = Array.from(gameCanvasData.asteroids.values());
+                
                 clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(canvasDataCopy));
             }
         }

@@ -3,8 +3,8 @@
 const gameModel = {
     "spacecrafts": new Map(),
     "spacecraftControllers": new Map(),
-    "asteroids": [],
-    "asteroidControllers": []
+    "asteroids": new Map(),
+    "asteroidControllers": new Map()
 };
 
 const initGameCanvas = (canvas, clientSocket, myGameSession) => {

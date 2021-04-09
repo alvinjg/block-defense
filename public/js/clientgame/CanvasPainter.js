@@ -33,17 +33,13 @@ class CanvasPainter {
         let asteroids = this._gameModel.asteroids;
         let controllers = this._gameModel.asteroidControllers;
 
-        for (let i = 0; i < asteroids.length; i++) {
-            let asteroid = asteroids[i];
+        for (let asteroid of asteroids.values()) {
 
             let y = asteroid._property._y;
+            // if out of canvas
             if (y > this._canvas.height) {
-                asteroids.splice(i, 1);
-                // if asteroid has controller delete it
-                if (asteroid._controller) {
-                    let i = controllers.findIndex((element) => element === asteroid._controller);
-                    controllers.splice(i, 1);
-                }
+                asteroids.delete(asteroid._property._id);
+                controllers.delete(asteroid._property._id);
             } else {
                 asteroid.draw();
             }
