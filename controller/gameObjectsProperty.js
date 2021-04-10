@@ -8,7 +8,13 @@ const OBJ_MOVEMENT = {
     "RIGHT": 4
 };
 const MOVEMENT_TYPE = {
-    "DOWN": 0
+    "IDLE":0,
+    "DOWN": 1
+};
+const OBJECT_STATUS = {
+    "EXIST": 0,
+    "DESTROYED": 1,
+    "DELETED": 2
 };
 
 class CanvasObjectProperty {
@@ -24,6 +30,7 @@ class CanvasObjectProperty {
         this._radius = 5;
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
         this._movementType = MOVEMENT_TYPE.DOWN;
+        this._status = OBJECT_STATUS.EXIST;
     }
 }
 
@@ -139,7 +146,7 @@ class AsteroidProperty extends LivingObjectProperty {
         this._fullLife = 5000;
         this._currentLife = this._fullLife;
         this._team = TEAM_TYPE.ENEMY;
-        this._radius = 50;
+        this._radius = 75;
         this._speed_x = 0.1;
         this._speed_y = 0.5;
         this._y = 0;

@@ -8,12 +8,14 @@ class AsteroidController {
         this._moveXCooldown = 100;
         this._lastMoveX = new Date();
 
-        this._clientSocket.on(sockConst.MOVE_ASTEROID, (movementObj) => {
-            movementObj = JSON.parse(movementObj);
+        if (this.clientSocket) {
+            this._clientSocket.on(sockConst.MOVE_ASTEROID, (movementObj) => {
+                movementObj = JSON.parse(movementObj);
 
-            this._asteroid._property._target_x = movementObj.x;
-            this._asteroid._property._target_y = movementObj.y;
-        });
+                this._asteroid._property._target_x = movementObj.x;
+                this._asteroid._property._target_y = movementObj.y;
+            });
+        }
     }
 
     // actual movement of spaceship in canvas

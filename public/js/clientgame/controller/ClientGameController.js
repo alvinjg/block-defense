@@ -42,7 +42,7 @@ class ClientGameController {
         });
         this._clientSocket.on(sockConst.NEW_ENEMY_ATTACK, (enemyGroup) => {
             enemyGroup = JSON.parse(enemyGroup);
-            enemyGroup.asteroids.forEach(function(value){
+            enemyGroup.asteroids.forEach(function (value) {
                 clientControllerObj.createAsteroid(value);
             });
         });
@@ -75,7 +75,9 @@ class ClientGameController {
         // move asteroids
         controllers = this._gameModel.asteroidControllers;
         controllers.forEach(function (controller) {
-            controller.control();
+            if (controller._asteroid._property._status === OBJECT_STATUS.EXIST) {
+                controller.control();
+            }
         });
     }
 
@@ -96,19 +98,21 @@ class ClientGameController {
 
         for (let asteroid of asteroids.values()) {
 
-            this.spaceshipBulletHits(function (ammo, indx, ammos) {
-                let collided = asteroid.isCollided(ammo._x, ammo._y, ammo._radius);
-                if (collided) {
-                    asteroid.hit(ammo._damage);
-                    ammos.splice(indx, 1); // remove the bullet that hit
-                    indx--;
-                    // asteroid is destroyed
-                    if (asteroid._property._currentLife <= 0) {
-                        clientControllerObj._clientSocket.emit(sockConst.ASTEROID_DESTROYED, asteroid._property._id);
-                        clientControllerObj.deleteAsteroid(asteroid._property._id);
+            if (OBJECT_STATUS.EXIST === asteroid._property._status) {
+                this.spaceshipBulletHits(function (ammo, indx, ammos) {
+                    let collided = asteroid.isCollided(ammo._x, ammo._y, ammo._radius);
+                    if (collided) {
+                        asteroid.hit(ammo._damage);
+                        ammos.splice(indx, 1); // remove the bullet that hit
+                        indx--;
+                        // asteroid is destroyed
+                        if (asteroid._property._currentLife <= 0) {
+                            clientControllerObj._clientSocket.emit(sockConst.ASTEROID_DESTROYED, asteroid._property._id);
+                            clientControllerObj.deleteAsteroid(asteroid._property._id);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -135,7 +139,14 @@ class ClientGameController {
     }
 
     deleteAsteroid(asteroidId) {
-        this._gameModel.asteroids.delete(asteroidId);
-        this._gameModel.asteroidControllers.delete(asteroidId);
+        let asteroid = this._gameModel.asteroids.get(asteroidId);
+        if (asteroid) {
+            asteroid._property._status = OBJECT_STATUS.DESTROYED;
+        }
+        let thisObj = this;
+        setTimeout(function () {
+            thisObj._gameModel.asteroids.delete(asteroidId);
+            thisObj._gameModel.asteroidControllers.delete(asteroidId);
+        }, 2500);
     }
 }
