@@ -143,10 +143,10 @@ class PrimaryAmmoProperty extends AmmoProperty {
 class AsteroidProperty extends LivingObjectProperty {
     constructor() {
         super();
-        this._fullLife = 5000;
+        this._fullLife = 1000;
         this._currentLife = this._fullLife;
         this._team = TEAM_TYPE.ENEMY;
-        this._radius = 75;
+        this._radius = 30;
         this._speed_x = 0.1;
         this._speed_y = 0.5;
         this._y = 0;

@@ -114,7 +114,7 @@ class Asteroid extends LivingObject {
             let imgX = this._property._x - this._property._radius;
             let imgY = this._property._y - this._property._radius;
             // draw the frame in the sprite
-            this._context.drawImage(asteroidSprite, column * this._frameWidth, row * this._frameHeight, this._frameWidth, this._frameHeight, imgX, imgY, this._property._radius, this._property._radius);
+            this._context.drawImage(asteroidSprite, column * this._frameWidth, row * this._frameHeight, this._frameWidth, this._frameHeight, imgX, imgY, this._property._radius * 2, this._property._radius * 2);
         } else if (OBJECT_STATUS.DESTROYED === this._property._status) {
             if (this._miniAsteroid.size === 0) {
                 this.createMiniAsteroids();
@@ -131,8 +131,9 @@ class Asteroid extends LivingObject {
         this._lastHitTime = new Date();
         this._property._currentLife -= damage;
 
-        let scaling = this._property._currentLife / this._property._fullLife;
-        if (scaling > 0.5) {
+        let life = this._property._currentLife / this._property._fullLife;
+        let scaling = 1 - ((1 - life) * 0.5); // Scaling Ratio = 2:1. A damage of 25% will reduce the scale by 12.5%
+        if (life > 0.3) {
             this._property._radius = this._startRadius * scaling;
         }
     }
@@ -153,9 +154,9 @@ class Asteroid extends LivingObject {
 
     // checks if this object collides from other object
     isCollided(objX, objY, objRadius) {
-        let innerRadius = this._property._radius * 0.5;
-        let x = this._property._x - innerRadius;
-        let y = this._property._y - innerRadius;
+        let innerRadius = this._property._radius * 0.7;
+        let x = this._property._x - (this._property._radius * 0.2);
+        let y = this._property._y;
 
         let distance = this.getDistance(objX, objY, x, y);
         if (distance < (objRadius + innerRadius)) {
