@@ -99,14 +99,14 @@ function displayPing(pingMs) {
     if (pingNum) {
         pingNum.className = "";
 
-        if(pingMs < 300){
+        if (pingMs < 300) {
             pingNum.classList.add("green");
-        }else if(pingMs < 400){
+        } else if (pingMs < 400) {
             pingNum.classList.add("amber");
-        }else{
+        } else {
             pingNum.classList.add("red");
         }
-        if(pingMs > 999){
+        if (pingMs > 999) {
             pingMs = 999;
         }
         pingNum.innerHTML = pingMs + "ms";
@@ -117,5 +117,16 @@ function displayPing(pingMs) {
 function setTeamScore(score) {
     if (teamScore) {
         teamScore.innerHTML = score;
+    }
+}
+
+function updatePlayerLife(spacecraftId, currentLife) {
+    let player = document.querySelector(`.player[data-id="${spacecraftId}"] #life`);
+    if (player && gameModel) {
+        let ship = gameModel.spacecrafts.get(spacecraftId);
+        if (ship) {
+            let percentage = (currentLife / ship._property._fullLife) * 100;
+            player.style.width = `${percentage}%`;
+        }
     }
 }

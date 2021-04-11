@@ -108,7 +108,7 @@ class GameControllerFactory {
     }
 
     // refresh client data on reload
-    refreshClient(clientSocket, gameID){
+    refreshClient(clientSocket, gameID) {
         let gController = this._controllerMap.get(gameID);
         if (gController) {
             gController.refreshClient(clientSocket);
@@ -128,6 +128,27 @@ class GameControllerFactory {
         let gController = this._controllerMap.get(gameID);
         clientSocket.on(constants.ASTEROID_DESTROYED, (asteroidId) => {
             gController.deleteAsteroid(asteroidId);
+        });
+        clientSocket.on(constants.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
+            let player = gController._canvasData.spacecrafts.get(sessionId);
+            if (player) {
+                player._currentLife = currentLife;
+                gController._io.to(gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
+            }
+        });
+        clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId, immuneFlag) => {
+            let player = gController._canvasData.spacecrafts.get(sessionId);
+            if (player) {
+                player._immune = immuneFlag;
+                gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, immuneFlag);
+            }
+        });
+        clientSocket.on(constants.PLAYER_DESTROYED, (sessionId) => {
+            let player = gController._canvasData.spacecrafts.get(sessionId);
+            if (player) {
+                player._status = obj.OBJECT_STATUS.DESTROYED;
+                gController._io.to(gameID).emit(constants.PLAYER_DESTROYED, sessionId);
+            }
         });
     }
 };

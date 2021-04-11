@@ -30,6 +30,11 @@ class ClientGameController {
             this.createAsteroid(asteroidData);
         }
 
+        // initialize players in game Panel
+        for (let spacecraftData of gameData.spacecrafts) {
+            updatePlayerLife(spacecraftData._sessionId, spacecraftData._currentLife);
+        }
+
         this.initServerEvents();
     }
 
@@ -48,6 +53,22 @@ class ClientGameController {
         });
         this._clientSocket.on(sockConst.UPDATE_TEAM_SCORE, (score) => {
             setTeamScore(score);
+        });
+        this._clientSocket.on(sockConst.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
+            updatePlayerLife(sessionId, currentLife);
+        });
+        this._clientSocket.on(sockConst.PLAYER_IS_IMMUNE, (sessionId, immuneFlag) => {
+            let spaceship = this._gameModel.spacecrafts.get(sessionId);
+            if (spaceship) {
+                spaceship._property._immune = immuneFlag;
+
+            }
+        });
+        this._clientSocket.on(sockConst.PLAYER_DESTROYED, (sessionId) => {
+            let spaceship = this._gameModel.spacecrafts.get(sessionId);
+            if (spaceship) {
+                spaceship._property._status = OBJECT_STATUS.DESTROYED;
+            }
         });
     }
 
@@ -131,6 +152,44 @@ class ClientGameController {
                 indx++;
             }
         }
+    }
+
+    spachipIsHit() {
+        let asteroids = Array.from(this._gameModel.asteroids.values());
+        let spaceships = this._gameModel.spacecrafts.values();
+        let clientControllerObj = this;
+
+        for (let spaceship of spaceships) {
+
+            for (let i = 0; i < asteroids.length; i++) {
+                let asteroid = asteroids[i];
+                if (OBJECT_STATUS.EXIST === asteroid._property._status) {
+                    // check if spaship collides with asteroid
+                    let collided = spaceship.isCollided(asteroid._property._x, asteroid._property._y, asteroid._property._radius);
+                    let shipProp = spaceship._property;
+                    if (collided && !shipProp._immune) {
+                        spaceship.hit(asteroid._property._damage);
+
+                        // delete player if Destroyed
+                        if (shipProp._currentLife <= 0) {
+                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
+                        } else {
+
+                            // immune for 2.5 seconds when hit by asteroid
+                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, true);
+                            setTimeout(function () {
+                                clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, false);
+                            }, 2500);
+                        }
+                        
+                        // notify every one that player is hit
+                        clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
+                    }
+                }
+            }
+        }
+
+
     }
 
     // get the distance using pythagorean theorem

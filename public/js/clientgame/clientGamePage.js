@@ -28,6 +28,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
             painter.drawAsteroids();
 
             gameController.asteroidIsHit();
+            gameController.spachipIsHit();
         }, 15);
 
         // interval for moving objects in canvas; Required to see movement in canvas

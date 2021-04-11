@@ -31,6 +31,8 @@ class CanvasObjectProperty {
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
         this._movementType = MOVEMENT_TYPE.DOWN;
         this._status = OBJECT_STATUS.EXIST;
+        this._scoreValue = 0;
+        this._damage = 0;
     }
 }
 
@@ -154,6 +156,7 @@ class AsteroidProperty extends LivingObjectProperty {
         this._height = this._radius;
         this._color = '#de1d38';
         this._scoreValue = 100;
+        this._damage = 1000;
     }
 }
 
@@ -165,6 +168,8 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._y = 20;
         this._radius = 35;
         this._totalRadius = this._radius;
+        this._fullLife = 10000;
+        this._currentLife = this._fullLife;
         this._speed_x = 4;
         this._speed_y = 4;
         this._weapon1 = null;
@@ -174,8 +179,11 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._sessionId = null; // session of player
         this._strokeWidth = 10;
         this._totalRadius = this._radius + Math.floor(this._strokeWidth / 2);
+        this._immune = false;
+        this._playerName = null;
     }
 }
 
+module.exports.OBJECT_STATUS = OBJECT_STATUS;
 module.exports.SpacecraftProperty = SpacecraftProperty;
 module.exports.AsteroidProperty = AsteroidProperty;

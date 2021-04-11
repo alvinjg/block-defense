@@ -1,9 +1,9 @@
-const { uniqueNamesGenerator, adjectives, colors, animals } = require('unique-names-generator');
+const { uniqueNamesGenerator, adjectives, colors, animals, names } = require('unique-names-generator');
 
 const utils = {
     genRandomName: function () {
         let name = uniqueNamesGenerator({
-            dictionaries: [colors, animals],
+            dictionaries: [names],
             style: 'capital'
         });
         return name.replace("_", " ");

@@ -63,3 +63,13 @@ div.spacer {
 #ping .red{
     color: rgb(236, 91, 91);
 }
+
+.whole-life{
+    margin-bottom: 0.2rem;
+}
+
+.current-life{
+    display: block;
+    background-color: rgb(7, 199, 7);
+    height: 0.5rem;
+}

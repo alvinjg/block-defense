@@ -15,8 +15,11 @@
                     <span id="teamScore" class="col-8 text-right">0</span>
                 </div>
                 {{#each gameObj.players}}
-                <div class="player" id="{{this.id}}" style="background-color: {{this.color}}4a; color: {{this.color}}">
-                    {{this.name}}
+                <div class="player" data-id="{{this.id}}" style="background-color: {{this.color}}4a; color: {{this.color}}">
+                    <div>{{this.name}}</div>
+                    <div class="whole-life">
+                        <span id="life" class="current-life" style="width:70%; background-color: green;">&nbsp;</span>
+                    </div>
                 </div>
                 {{/each}}
             </div>

@@ -21,7 +21,7 @@ class SpacecraftController {
         this._movementQueue = [];
 
         let halfRadius = this._spaceship._property._radius * 0.5;
-        this._spaceship._property._upBoundary =  Math.floor(this._canvasHeight * 0.10);
+        this._spaceship._property._upBoundary = Math.floor(this._canvasHeight * 0.10);
         this._spaceship._property._downBoundary = this._canvasHeight - halfRadius;
         this._spaceship._property._leftBoundary = halfRadius;
         this._spaceship._property._rightBoundary = this._canvasWidth - halfRadius;
@@ -174,46 +174,48 @@ class SpacecraftController {
 
 
     control() {
-        this.moveSpaceship();
+        if (OBJECT_STATUS.EXIST === this._spaceship._property._status) {
+            this.moveSpaceship();
 
-        let moving = this._isMovingUp || this._isMovingLeft || this._isMovingDown || this._isMovingRight;
-        if (moving) {
-            // send the spaceship movement to server
-            let newMovement = this._newMovement;
+            let moving = this._isMovingUp || this._isMovingLeft || this._isMovingDown || this._isMovingRight;
+            if (moving) {
+                // send the spaceship movement to server
+                let newMovement = this._newMovement;
 
-            if (this._isMovingUp) {
-                newMovement.y = this._spaceship._property.moveUp(newMovement.y);
-                newMovement.direction = OBJ_MOVEMENT.UP;
-            }
-            if (this._isMovingLeft) {
-                newMovement.x = this._spaceship._property.moveLeft(newMovement.x);
-                newMovement.direction = OBJ_MOVEMENT.LEFT;
-            }
-            if (this._isMovingDown) {
-                newMovement.y = this._spaceship._property.moveDown(newMovement.y);
-                newMovement.direction = OBJ_MOVEMENT.DOWN;
-            }
-            if (this._isMovingRight) {
-                newMovement.x = this._spaceship._property.moveRight(newMovement.x);
-                newMovement.direction = OBJ_MOVEMENT.RIGHT;
-            }
+                if (this._isMovingUp) {
+                    newMovement.y = this._spaceship._property.moveUp(newMovement.y);
+                    newMovement.direction = OBJ_MOVEMENT.UP;
+                }
+                if (this._isMovingLeft) {
+                    newMovement.x = this._spaceship._property.moveLeft(newMovement.x);
+                    newMovement.direction = OBJ_MOVEMENT.LEFT;
+                }
+                if (this._isMovingDown) {
+                    newMovement.y = this._spaceship._property.moveDown(newMovement.y);
+                    newMovement.direction = OBJ_MOVEMENT.DOWN;
+                }
+                if (this._isMovingRight) {
+                    newMovement.x = this._spaceship._property.moveRight(newMovement.x);
+                    newMovement.direction = OBJ_MOVEMENT.RIGHT;
+                }
 
-            this._isMoved = true;
-        }
-
-        if (this._isFiring) {
-            let current = new Date();
-            let elapsed = current - this._lastFired;
-
-            if (elapsed > this._firingCooldown) {
-                let shotObj = {
-                    "sessionId": this._spaceship._property._sessionId,
-                    "timestamp": new Date().getTime()
-                };
-                this._clientSocket.emit(sockConst.PLAYER_SHOOTING, shotObj);
-                this._lastFired = current;
+                this._isMoved = true;
             }
 
+            if (this._isFiring) {
+                let current = new Date();
+                let elapsed = current - this._lastFired;
+
+                if (elapsed > this._firingCooldown) {
+                    let shotObj = {
+                        "sessionId": this._spaceship._property._sessionId,
+                        "timestamp": new Date().getTime()
+                    };
+                    this._clientSocket.emit(sockConst.PLAYER_SHOOTING, shotObj);
+                    this._lastFired = current;
+                }
+
+            }
         }
     }
 

@@ -28,6 +28,7 @@ const gameServer = (io, clientSocket) => {
                         let spacecraftProp = new obj.SpacecraftProperty();
                         spacecraftProp._sessionId = player.id;
                         spacecraftProp._color = player.color;
+                        spacecraftProp._playerName = player.name;
 
                         // start position of player in canvas
                         let tempStartX = startX + (((spacecraftProp._totalRadius * 2) + 5) * ctr);
