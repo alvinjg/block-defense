@@ -172,16 +172,18 @@ class ClientGameController {
 
                         // delete player if Destroyed
                         if (shipProp._currentLife <= 0) {
+                            shipProp._status = OBJECT_STATUS.DESTROYED;
                             clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
                         } else {
 
                             // immune for 2.5 seconds when hit by asteroid
+                            shipProp._immune = true;
                             clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, true);
                             setTimeout(function () {
                                 clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, false);
                             }, 2500);
                         }
-                        
+
                         // notify every one that player is hit
                         clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
                     }
