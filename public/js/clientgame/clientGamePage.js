@@ -11,6 +11,8 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
     let canvasPainterIntervalId = 0;
     let canvasControllerIntervalId = 0;
     let userControlIntervalId = 0;
+    let cleanUpIntervalId = 0;
+    let updateServerIntervalId = 0;
 
     clientSocket.emit(sockConst.INIT_GAME_CANVAS, myGameSession.id);
     clientSocket.on(sockConst.INIT_GAME_CANVAS, (gameCanvasData) => {
@@ -36,6 +38,16 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
             gameController.moveModelObjects();
         }, 15);
 
+        // interval for clean up of canvas object 
+        cleanUpIntervalId = setInterval(() => {
+            gameController.cleanUpGameObj();
+        }, 250);
+
+        // interval for updating the server
+        updateServerIntervalId = setInterval(() => {
+            gameController.updateServer();
+        }, 500);
+        
         // interval for sending movement of objects to server
         userControlIntervalId = setInterval(() => {
             gameController.sendModelObjectMovement();

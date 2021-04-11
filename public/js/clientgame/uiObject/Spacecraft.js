@@ -77,11 +77,22 @@ class Spacecraft extends LivingObject {
 
     firePrimaryAmmo() {
         let ammo1 = new PrimaryAmmoProperty();
-        ammo1._x = this._property._x - Math.floor(ammo1._width / 2);
-        ammo1._y = this._property._y - this._property._radius;
-        ammo1._color = this._property._color;
+
+        let x = this._property._x - Math.floor(ammo1._width / 2);
+        let y = this._property._y - this._property._radius;
+        let color = this._property._color;
+
+        ammo1._x = x;
+        ammo1._y = y;
+        ammo1._color = color;
+
+        let ammo2 = new PrimaryAmmoProperty();
+        ammo2._x = x;
+        ammo2._y = y - (ammo2._radius * 4);
+        ammo2._color = color;
 
         this._property._firedAmmos.push(ammo1);
+        this._property._firedAmmos.push(ammo2);
     }
 
     // overriden

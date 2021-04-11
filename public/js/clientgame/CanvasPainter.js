@@ -34,15 +34,7 @@ class CanvasPainter {
         let controllers = this._gameModel.asteroidControllers;
 
         for (let asteroid of asteroids.values()) {
-
-            let y = asteroid._property._y;
-            // if out of canvas
-            if (y > this._canvas.height) {
-                asteroids.delete(asteroid._property._id);
-                controllers.delete(asteroid._property._id);
-            } else {
-                asteroid.draw();
-            }
+            asteroid.draw();
         }
     }
 

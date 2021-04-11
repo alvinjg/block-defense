@@ -113,7 +113,33 @@ class ClientGameController {
         }
     }
 
+    cleanUpGameObj() {
+        let asteroids = this._gameModel.asteroids;
+        let controllers = this._gameModel.asteroidControllers;
 
+        for (let asteroid of asteroids.values()) {
+            let y = asteroid._property._y;
+            // if out of canvas
+            if (y > this._canvas.height) {
+                this._clientSocket.emit(sockConst.CLEANUP_ASTEROID, asteroid._property._id);
+                asteroids.delete(asteroid._property._id);
+                controllers.delete(asteroid._property._id);
+            }
+        }
+    }
+
+    updateServer() {
+        let asteroids = this._gameModel.asteroids;
+        let asteroidArray = [];
+
+        for(let ast of asteroids.values()){
+            let astProp = ast._property;
+            asteroidArray.push(astProp);
+        }
+
+        // update the server on the current positon of asteroid in canvas
+        this._clientSocket.emit(sockConst.UPDATE_ASTEROID, JSON.stringify(asteroidArray));
+    }
 
     // check if asteroid is hit
     asteroidIsHit() {

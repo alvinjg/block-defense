@@ -92,6 +92,12 @@ function setLobby_removeAllPlayerTile() {
 function setGamePage_display() {
     if (gamePageBody) {
         gamePageBody.querySelector(".container").classList.remove("d-none");
+
+        let player = document.querySelector(`.player[data-id="${myGameSession.id}"]`);
+        if (player) {
+            player.classList.add('my-player');
+        }
+        
     }
 }
 

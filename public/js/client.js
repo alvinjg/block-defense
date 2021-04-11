@@ -20,7 +20,9 @@ const sockConst = {
     UPDATE_TEAM_SCORE: 19,
     UPDATE_PLAYER_LIFE:20,
     PLAYER_IS_IMMUNE:21,
-    PLAYER_DESTROYED:22
+    PLAYER_DESTROYED:22,
+    CLEANUP_ASTEROID:23,
+    UPDATE_ASTEROID:24
 };
 
 const startGameButton = document.querySelector("#startGameButton");

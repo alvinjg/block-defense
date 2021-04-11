@@ -35,6 +35,10 @@ div.spacer {
     border: 2px solid white;
 }
 
+.my-player{
+    border: 1px solid white;
+}
+
 #game-canvas {
     background-color: #ffffff;
 }

@@ -66,8 +66,8 @@ class AIGameController {
         };
     }
 
-    // delete asteroid from the Game Canvas
-    deleteAsteroid(asteroidId) {
+    // delete asteroid destroyed by user from the Game Canvas
+    destroyAsteroid(asteroidId) {
         let asteroid = this._canvasData.asteroids.get(asteroidId);
 
         if (asteroid && asteroid._id === asteroidId) {
@@ -78,6 +78,31 @@ class AIGameController {
             this._game.score += asteroid._scoreValue;
             this._io.in(this._gameID).emit(constants.UPDATE_TEAM_SCORE, this._game.score);
         }
+    }
+
+    // For cleanup. Remove Asteroid in server model if it is out of client canvas
+    removeAsteroidFromModel(asteroidId) {
+        let asteroid = this._canvasData.asteroids.get(asteroidId);
+
+        if (asteroid && asteroid._id === asteroidId) {
+            this._canvasData.asteroids.delete(asteroidId);
+        }
+    }
+
+    updateAsteroidPosition(asteroidArray) {
+        let controllerObj = this;
+        asteroidArray.forEach(function (value) {
+            let asteroid = controllerObj._canvasData.asteroids.get(value._id);
+
+            if (asteroid && asteroid._id === value._id) {
+                asteroid._x = value._x;
+                asteroid._y = value._y;
+                asteroid._currentLife = value._currentLife;
+                asteroid._radius = value._radius;
+            }
+        });
+
+
     }
 }
 
@@ -127,7 +152,7 @@ class GameControllerFactory {
     attachSocketToController(clientSocket, gameID) {
         let gController = this._controllerMap.get(gameID);
         clientSocket.on(constants.ASTEROID_DESTROYED, (asteroidId) => {
-            gController.deleteAsteroid(asteroidId);
+            gController.destroyAsteroid(asteroidId);
         });
         clientSocket.on(constants.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
@@ -149,6 +174,12 @@ class GameControllerFactory {
                 player._status = obj.OBJECT_STATUS.DESTROYED;
                 gController._io.to(gameID).emit(constants.PLAYER_DESTROYED, sessionId);
             }
+        });
+        clientSocket.on(constants.CLEANUP_ASTEROID, (asteroidId) => {
+            gController.removeAsteroidFromModel(asteroidId);
+        });
+        clientSocket.on(constants.UPDATE_ASTEROID, (asteroidArray) => {
+            gController.updateAsteroidPosition(JSON.parse(asteroidArray));
         });
     }
 };
