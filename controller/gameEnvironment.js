@@ -20,6 +20,7 @@ const gameEnv = {
             "isStarted": false,
             "isRunning": false,
             "runningSince": 0,
+            "score": 0,
             "canvasData": undefined
         };
     },

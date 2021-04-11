@@ -46,6 +46,9 @@ class ClientGameController {
                 clientControllerObj.createAsteroid(value);
             });
         });
+        this._clientSocket.on(sockConst.UPDATE_TEAM_SCORE, (score) => {
+            setTeamScore(score);
+        });
     }
 
     // create an Asteroid that the player will fight. The created Asteroid and its controller is added to the game model.

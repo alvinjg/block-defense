@@ -28,22 +28,22 @@ class AIGameController {
         let nextEnemyGroup = this._enemyList[0];
         if (nextEnemyGroup && nextEnemyGroup.attackTime < elapsed) {
             this._io.to(this._gameID).emit(constants.NEW_ENEMY_ATTACK, JSON.stringify(nextEnemyGroup));
-            this._enemyList.splice(0,1); // remove the enemy group that already sent
+            this._enemyList.splice(0, 1); // remove the enemy group that already sent
+
+            // Add the sent asteroid to the servers canvas data
+            let controllerObj = this;
+            nextEnemyGroup.asteroids.forEach(function (astProp) {
+                controllerObj._canvasData.asteroids.set(astProp._id, astProp);
+            });
         }
     }
 
-    createAsteroid() {
-        let astProp = new obj.AsteroidProperty();
-        astProp._id = uuid.v4();
-
-        let canvas = this._canvasData.canvasInfo;
-        astProp._x = Math.floor(canvas.width / 2) - Math.floor(astProp._width / 2);
-        astProp._y = 20;
-
-        this._canvasData.asteroids.set(astProp._id, astProp);
+    // refresh client once reconnected
+    refreshClient(clientSocket) {
+        clientSocket.emit(constants.UPDATE_TEAM_SCORE, this._game.score);
     }
 
-    
+
     // sends the next position of an Asteroid to the clients.
     sendMoveAsteroid() {
         let asteroid = this._canvasData.asteroids.values().next().value;
@@ -73,6 +73,10 @@ class AIGameController {
         if (asteroid && asteroid._id === asteroidId) {
             this._canvasData.asteroids.delete(asteroidId);
             this._io.in(this._gameID).emit(constants.ASTEROID_DESTROYED, asteroidId);
+
+            // update score of clients
+            this._game.score += asteroid._scoreValue;
+            this._io.in(this._gameID).emit(constants.UPDATE_TEAM_SCORE, this._game.score);
         }
     }
 }
@@ -99,7 +103,15 @@ class GameControllerFactory {
     initializeController(gameID) {
         let gController = this._controllerMap.get(gameID);
         if (gController) {
-            // gController.createAsteroid();
+            // no implementation
+        }
+    }
+
+    // refresh client data on reload
+    refreshClient(clientSocket, gameID){
+        let gController = this._controllerMap.get(gameID);
+        if (gController) {
+            gController.refreshClient(clientSocket);
         }
     }
 

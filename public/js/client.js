@@ -16,7 +16,8 @@ const sockConst = {
     PLAYER_SHOOTING: 15,
     MOVE_ASTEROID: 16,
     ASTEROID_DESTROYED: 17,
-    NEW_ENEMY_ATTACK: 18
+    NEW_ENEMY_ATTACK: 18,
+    UPDATE_TEAM_SCORE: 19
 };
 
 const startGameButton = document.querySelector("#startGameButton");

@@ -10,8 +10,12 @@
             </div>
             <div id="gamePanel" class="col-lg-3">
                 <h2 class="text-center">{{gameObj.teamName}}</h2>
+                <div class="row">
+                    <span class="col-4">Score:</span>
+                    <span id="teamScore" class="col-8 text-right">0</span>
+                </div>
                 {{#each gameObj.players}}
-                <div class="player" style="background-color: {{this.color}}4a; color: {{this.color}}">
+                <div class="player" id="{{this.id}}" style="background-color: {{this.color}}4a; color: {{this.color}}">
                     {{this.name}}
                 </div>
                 {{/each}}

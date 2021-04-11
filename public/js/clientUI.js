@@ -7,6 +7,7 @@ const joinGameForm = document.querySelector("#joinGameForm");
 const startGame = document.querySelector("#startGame");
 const playerContainer = document.querySelector(".team-container .players");
 const pingNum = document.querySelector("#ping span:first-child");
+const teamScore = document.querySelector("#teamScore");
 
 
 function setHome_display() {
@@ -109,5 +110,12 @@ function displayPing(pingMs) {
             pingMs = 999;
         }
         pingNum.innerHTML = pingMs + "ms";
+    }
+}
+
+// update the score of the team in client
+function setTeamScore(score) {
+    if (teamScore) {
+        teamScore.innerHTML = score;
     }
 }

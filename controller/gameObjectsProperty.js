@@ -153,6 +153,7 @@ class AsteroidProperty extends LivingObjectProperty {
         this._width = this._radius;
         this._height = this._radius;
         this._color = '#de1d38';
+        this._scoreValue = 100;
     }
 }
 

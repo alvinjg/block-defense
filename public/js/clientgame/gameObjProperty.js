@@ -30,6 +30,7 @@ class CanvasObjectProperty {
         this._totalRadius = this._radius;               // accumulated boundary of an object. ex. radius + strokeWidth
         this._movementType = MOVEMENT_TYPE.DOWN;
         this._status = OBJECT_STATUS.EXIST;
+        this._scoreValue = 0;
     }
 }
 
@@ -152,6 +153,7 @@ class AsteroidProperty extends LivingObjectProperty {
         this._width = this._radius;
         this._height = this._radius;
         this._color = '#de1d38';
+        this._scoreValue = 100;
     }
 }
 

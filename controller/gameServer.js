@@ -61,8 +61,10 @@ const gameServer = (io, clientSocket) => {
                 // Convert Maps to Array
                 canvasDataCopy.spacecrafts = Array.from(gameCanvasData.spacecrafts.values());
                 canvasDataCopy.asteroids = Array.from(gameCanvasData.asteroids.values());
-                
+
                 clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(canvasDataCopy));
+                
+                gameCtrlFactory.refreshClient(clientSocket, game.gameID);
             }
         }
     });
