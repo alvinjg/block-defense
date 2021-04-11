@@ -161,7 +161,8 @@ class SpacecraftProperty extends LivingObjectProperty {
         super();
         this._x = 20;
         this._y = 20;
-        this._radius = 10;
+        this._radius = 35;
+        this._totalRadius = this._radius; 
         this._speed_x = 4;
         this._speed_y = 4;
         this._weapon1 = null;

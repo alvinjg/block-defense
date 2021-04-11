@@ -1,9 +1,9 @@
 
 let asteroidSprite = null;
-window.onload = function () {
+window.addEventListener('load', function () {
     // The sprite should be added in the html using the <img> tag
     asteroidSprite = document.getElementById("asteroidSprite");
-}
+});
 
 class Asteroid extends LivingObject {
     constructor(canvas, property) {
@@ -111,8 +111,10 @@ class Asteroid extends LivingObject {
             // Update rows and columns
             let column = this._currentFrame % this._numOfSpriteCol;
             let row = Math.floor(this._currentFrame / this._numOfSpriteCol);
+            let imgX = this._property._x - this._property._radius;
+            let imgY = this._property._y - this._property._radius;
             // draw the frame in the sprite
-            this._context.drawImage(asteroidSprite, column * this._frameWidth, row * this._frameHeight, this._frameWidth, this._frameHeight, this._property._x, this._property._y, this._property._radius, this._property._radius);
+            this._context.drawImage(asteroidSprite, column * this._frameWidth, row * this._frameHeight, this._frameWidth, this._frameHeight, imgX, imgY, this._property._radius, this._property._radius);
         } else if (OBJECT_STATUS.DESTROYED === this._property._status) {
             if (this._miniAsteroid.size === 0) {
                 this.createMiniAsteroids();
@@ -151,12 +153,12 @@ class Asteroid extends LivingObject {
 
     // checks if this object collides from other object
     isCollided(objX, objY, objRadius) {
-        let halfradious = Math.floor(this._property._radius / 2)
-        let x = this._property._x + halfradious;
-        let y = this._property._y;// + halfradious;
+        let innerRadius = this._property._radius * 0.5;
+        let x = this._property._x - innerRadius;
+        let y = this._property._y - innerRadius;
 
         let distance = this.getDistance(objX, objY, x, y);
-        if (distance < (objRadius + halfradious)) {
+        if (distance < (objRadius + innerRadius)) {
             return true;
         }
         return false;

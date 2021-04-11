@@ -19,10 +19,12 @@ class SpacecraftController {
 
         this._isMoved = false;
         this._movementQueue = [];
-        this._spaceship._property._upBoundary = this._spaceship._property._radius + Math.floor(this._canvasHeight / 3);
-        this._spaceship._property._downBoundary = this._canvasHeight;
-        this._spaceship._property._leftBoundary = 0;
-        this._spaceship._property._rightBoundary = this._canvasWidth;
+
+        let halfRadius = this._spaceship._property._radius * 0.5;
+        this._spaceship._property._upBoundary =  Math.floor(this._canvasHeight * 0.10);
+        this._spaceship._property._downBoundary = this._canvasHeight - halfRadius;
+        this._spaceship._property._leftBoundary = halfRadius;
+        this._spaceship._property._rightBoundary = this._canvasWidth - halfRadius;
 
         this._clientSocket.on(sockConst.MOVE_PLAYER, (movementObj) => {
             movementObj = JSON.parse(movementObj);
