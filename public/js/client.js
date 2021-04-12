@@ -22,7 +22,9 @@ const sockConst = {
     PLAYER_IS_IMMUNE:21,
     PLAYER_DESTROYED:22,
     CLEANUP_ASTEROID:23,
-    UPDATE_ASTEROID:24
+    UPDATE_ASTEROID:24,
+    LAST_ENEMY_DEPLOYED: 25,
+    GAME_OVER: 26
 };
 
 const startGameButton = document.querySelector("#startGameButton");

@@ -46,6 +46,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
         // interval for updating the server
         updateServerIntervalId = setInterval(() => {
             gameController.updateServer();
+            gameController.isGameOver();
         }, 500);
 
         // interval for sending movement of objects to server

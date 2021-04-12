@@ -14,7 +14,7 @@ class ClientGameController {
         let gameCanvasData = gameData.canvasData;
         this._gameModel = gameData;
         this._gameModel.canvasData = this._gameCanvasModel;
-        
+
 
         for (let spacecraftData of gameCanvasData.spacecrafts) {
             // copy spacecraftData to property object
@@ -74,6 +74,12 @@ class ClientGameController {
             if (spaceship) {
                 spaceship._property._status = OBJECT_STATUS.DESTROYED;
             }
+        });
+        this._clientSocket.on(sockConst.LAST_ENEMY_DEPLOYED, () => {
+            this._gameCanvasModel.lastEnemyDeployed = true;
+        });
+        this._clientSocket.on(sockConst.GAME_OVER, () => {
+            this._gameModel.isGameOver = true;
         });
     }
 
@@ -136,7 +142,19 @@ class ClientGameController {
 
     // check if Game is Over
     isGameOver() {
-
+        let gameModel = this._gameModel;
+        let gameCanvasModel = this._gameCanvasModel;
+        if (gameModel.isGameOver) {
+            console.log("Game Over");
+        } else {
+            if (gameCanvasModel.lastEnemyDeployed) {
+                // check if there are enemy left in the Screen
+                let asteroids = this._gameCanvasModel.asteroids;
+                if (asteroids.size === 0) {
+                    this._clientSocket.emit(sockConst.GAME_OVER);
+                }
+            }
+        }
     }
 
     updateServer() {

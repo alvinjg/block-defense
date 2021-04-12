@@ -36,6 +36,11 @@ class AIGameController {
                 controllerObj._canvasData.asteroids.set(astProp._id, astProp);
             });
         }
+
+        // no enemy to deploy
+        if (this._enemyList && this._enemyList.length === 0) {
+            this._io.to(this._gameID).emit(constants.LAST_ENEMY_DEPLOYED);
+        }
     }
 
     // refresh client once reconnected
@@ -101,8 +106,16 @@ class AIGameController {
                 asteroid._radius = value._radius;
             }
         });
+    }
 
-
+    gameOver() {
+        if (!this._game.isGameOver) {
+            this._game.isGameOver = true;
+            let controllerObj = this;
+            setTimeout(function () {
+                controllerObj._io.in(controllerObj._gameID).emit(constants.GAME_OVER);
+            }, 2000);
+        }
     }
 }
 
@@ -180,6 +193,9 @@ class GameControllerFactory {
         });
         clientSocket.on(constants.UPDATE_ASTEROID, (asteroidArray) => {
             gController.updateAsteroidPosition(JSON.parse(asteroidArray));
+        });
+        clientSocket.on(constants.GAME_OVER, () => {
+            gController.gameOver();
         });
     }
 };
