@@ -43,6 +43,12 @@ class Spacecraft extends LivingObject {
         if (OBJECT_STATUS.EXIST === this._property._status) {
             if (this._property._immune) {
                 let elapsed = new Date() - this._lastHitTime;
+
+                // remove immunity after 2.5 sec
+                if(elapsed > 2500){
+                    this._property._immune = false;
+                }
+
                 // blink every 150ms when immune
                 if ((elapsed % 300) > 150) {
                     return;

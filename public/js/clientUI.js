@@ -8,6 +8,7 @@ const startGame = document.querySelector("#startGame");
 const playerContainer = document.querySelector(".team-container .players");
 const pingNum = document.querySelector("#ping span:first-child");
 const teamScore = document.querySelector("#teamScore");
+const gameOverBanner = document.querySelector("#gameOverBanner");
 
 
 function setHome_display() {
@@ -97,7 +98,7 @@ function setGamePage_display() {
         if (player) {
             player.classList.add('my-player');
         }
-        
+
     }
 }
 
@@ -134,5 +135,13 @@ function updatePlayerLife(spacecraftId, currentLife) {
             let percentage = (currentLife / ship._property._fullLife) * 100;
             player.style.width = `${percentage}%`;
         }
+    }
+}
+
+function displayGameOver(game) {
+    if (gameOverBanner) {
+        gameOverBanner.querySelector(".team-name").innerHTML = game.teamName;
+        gameOverBanner.querySelector(".score").innerHTML = game.score;
+        gameOverBanner.classList.remove("d-none");
     }
 }

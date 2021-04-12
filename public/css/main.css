@@ -77,3 +77,35 @@ div.spacer {
     background-color: rgb(7, 199, 7);
     height: 0.5rem;
 }
+
+#gameOverBanner {
+    background-color:#00000050;
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    z-index: 5;
+    width: 60%;
+    height: 50%;
+}
+
+#gameOverBanner img {
+    position: relative;
+    height: 45%;
+}
+
+#gameOverBanner .game-over{
+font-size: 2.5rem;
+font-weight: 400;
+}
+
+#gameOverBanner .team-name{
+    font-size: 1.5rem;
+}
+
+#gameOverBanner .score{
+    font-size: 3rem;
+}
+
+#gameOverBanner .thanks{
+    font-size: 1.2rem;
+}

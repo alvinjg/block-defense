@@ -7,6 +7,22 @@
 
                 </canvas>
                 <div id="ping">Ping: <span class="green">1ms</span></div>
+                <div id="gameOverBanner" class="d-none">
+                    <div class="text-center mb-3 game-over">Game Over</div>
+                    <div class="row">
+                        <div class="col-5">
+                            <img src="/img/ally-destroyer.png" alt="">
+                        </div>
+                        <div class="col-7">
+                            <div class="text-center team-name">Group 1</div>
+                            <div class="row">
+                                <span class="col-12 text-left">Total Score:</span>
+                                <span class="col-12 text-center score">9999</span>
+                            </div>
+                            <div class="text-center mt-5 thanks">Thanks for Playing!</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="gamePanel" class="col-lg-3">
                 <h2 class="text-center">{{gameObj.teamName}}</h2>
@@ -15,7 +31,8 @@
                     <span id="teamScore" class="col-8 text-right">0</span>
                 </div>
                 {{#each gameObj.players}}
-                <div class="player" data-id="{{this.id}}" style="background-color: {{this.color}}4a; color: {{this.color}}">
+                <div class="player" data-id="{{this.id}}"
+                    style="background-color: {{this.color}}4a; color: {{this.color}}">
                     <div>{{this.name}}</div>
                     <div class="whole-life">
                         <span id="life" class="current-life" style="width:70%; background-color: green;">&nbsp;</span>

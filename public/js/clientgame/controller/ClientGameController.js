@@ -5,6 +5,7 @@ class ClientGameController {
         this._gameModel = {};
         this._gameCanvasModel = gameModel;
 
+        this._gameOverDisplayed = false;
     }
 
     initialize(gameData) {
@@ -57,6 +58,7 @@ class ClientGameController {
             });
         });
         this._clientSocket.on(sockConst.UPDATE_TEAM_SCORE, (score) => {
+            this._gameModel.score = score;
             setTeamScore(score);
         });
         this._clientSocket.on(sockConst.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
@@ -140,12 +142,24 @@ class ClientGameController {
         }
     }
 
+
     // check if Game is Over
     isGameOver() {
         let gameModel = this._gameModel;
         let gameCanvasModel = this._gameCanvasModel;
-        if (gameModel.isGameOver) {
-            console.log("Game Over");
+        if (gameModel.isGameOver && !this._gameOverDisplayed) {
+
+            let ships = this._gameCanvasModel.spacecrafts;
+            let totalSpaceshipLife = 0;
+            for (let ship of ships.values()) {
+                totalSpaceshipLife += ship._property._currentLife;
+            }
+
+            let totalScore = this._gameModel.score + Math.floor(totalSpaceshipLife / ships.size);
+            this._gameModel.score = totalScore;
+            setTeamScore(totalScore);
+            displayGameOver(this._gameModel);
+            this._gameOverDisplayed = true;
         } else {
             if (gameCanvasModel.lastEnemyDeployed) {
                 // check if there are enemy left in the Screen
