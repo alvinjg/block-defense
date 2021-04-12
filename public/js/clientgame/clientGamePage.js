@@ -20,7 +20,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
 
         const gameController = new ClientGameController(canvas, clientSocket, gameModel);
         gameController.initialize(gameData);
-        
+
         const painter = new CanvasPainter(canvas, gameModel);
 
         // interval for drawing in canvas
@@ -47,7 +47,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
         updateServerIntervalId = setInterval(() => {
             gameController.updateServer();
         }, 500);
-        
+
         // interval for sending movement of objects to server
         userControlIntervalId = setInterval(() => {
             gameController.sendModelObjectMovement();

@@ -20,6 +20,7 @@ const gameEnv = {
             "isStarted": false,
             "isRunning": false,
             "runningSince": 0,
+            "isGameOver":false,
             "score": 0,
             "canvasData": undefined
         };
@@ -37,6 +38,7 @@ const gameEnv = {
             "leaderId": null,
             "spacecrafts": new Map(),
             "asteroids": new Map(),
+            "lastEnemyDeployed": false, // flag to check if all enemy is deployed
             "canvasInfo": {
                 "width": 800,
                 "height": 600

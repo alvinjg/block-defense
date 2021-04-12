@@ -58,12 +58,16 @@ const gameServer = (io, clientSocket) => {
                 // attach client to notify its game controller from any events
                 gameCtrlFactory.attachSocketToController(clientSocket, game.gameID);
 
+                let gameCopy = JSON.parse(JSON.stringify(game));
                 let canvasDataCopy = JSON.parse(JSON.stringify(gameCanvasData));
                 // Convert Maps to Array
                 canvasDataCopy.spacecrafts = Array.from(gameCanvasData.spacecrafts.values());
                 canvasDataCopy.asteroids = Array.from(gameCanvasData.asteroids.values());
+                gameCopy.players = Array.from(game.players.values())
 
-                clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(canvasDataCopy));
+                gameCopy.canvasData = canvasDataCopy;
+
+                clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(gameCopy));
                 
                 gameCtrlFactory.refreshClient(clientSocket, game.gameID);
             }

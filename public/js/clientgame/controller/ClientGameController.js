@@ -2,16 +2,21 @@ class ClientGameController {
     constructor(canvas, clientSocket, gameModel) {
         this._canvas = canvas;
         this._clientSocket = clientSocket;
-        this._gameModel = gameModel;
+        this._gameModel = {};
+        this._gameCanvasModel = gameModel;
 
     }
 
     initialize(gameData) {
         let canvas = this._canvas;
         let clientSocket = this._clientSocket;
-        let gameModel = this._gameModel;
+        let gameModel = this._gameCanvasModel;
+        let gameCanvasData = gameData.canvasData;
+        this._gameModel = gameData;
+        this._gameModel.canvasData = this._gameCanvasModel;
+        
 
-        for (let spacecraftData of gameData.spacecrafts) {
+        for (let spacecraftData of gameCanvasData.spacecrafts) {
             // copy spacecraftData to property object
             let spaceshipProp = new SpacecraftProperty();
             for (let key in spacecraftData) {
@@ -26,12 +31,12 @@ class ClientGameController {
             gameModel.spacecraftControllers.set(id, cont);
         }
 
-        for (let asteroidData of gameData.asteroids) {
+        for (let asteroidData of gameCanvasData.asteroids) {
             this.createAsteroid(asteroidData);
         }
 
         // initialize players in game Panel
-        for (let spacecraftData of gameData.spacecrafts) {
+        for (let spacecraftData of gameCanvasData.spacecrafts) {
             updatePlayerLife(spacecraftData._sessionId, spacecraftData._currentLife);
         }
 
@@ -58,14 +63,14 @@ class ClientGameController {
             updatePlayerLife(sessionId, currentLife);
         });
         this._clientSocket.on(sockConst.PLAYER_IS_IMMUNE, (sessionId, immuneFlag) => {
-            let spaceship = this._gameModel.spacecrafts.get(sessionId);
+            let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
             if (spaceship) {
                 spaceship._property._immune = immuneFlag;
 
             }
         });
         this._clientSocket.on(sockConst.PLAYER_DESTROYED, (sessionId) => {
-            let spaceship = this._gameModel.spacecrafts.get(sessionId);
+            let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
             if (spaceship) {
                 spaceship._property._status = OBJECT_STATUS.DESTROYED;
             }
@@ -85,19 +90,19 @@ class ClientGameController {
         let asteroid = new Asteroid(canvas, astProp);
         let cont = new AsteroidController(asteroid, this._clientSocket);
 
-        this._gameModel.asteroids.set(asteroid._property._id, asteroid);
-        this._gameModel.asteroidControllers.set(asteroid._property._id, cont);
+        this._gameCanvasModel.asteroids.set(asteroid._property._id, asteroid);
+        this._gameCanvasModel.asteroidControllers.set(asteroid._property._id, cont);
     }
 
     moveModelObjects() {
         // move spacecrafts
-        let controllers = this._gameModel.spacecraftControllers.values();
+        let controllers = this._gameCanvasModel.spacecraftControllers.values();
         for (let controller of controllers) {
             controller.control();
         }
 
         // move asteroids
-        controllers = this._gameModel.asteroidControllers;
+        controllers = this._gameCanvasModel.asteroidControllers;
         controllers.forEach(function (controller) {
             if (controller._asteroid._property._status === OBJECT_STATUS.EXIST) {
                 controller.control();
@@ -107,15 +112,16 @@ class ClientGameController {
 
     sendModelObjectMovement() {
         // move spacecrafts
-        let controllers = this._gameModel.spacecraftControllers.values();
+        let controllers = this._gameCanvasModel.spacecraftControllers.values();
         for (let controller of controllers) {
             controller.sendPendingMovement();
         }
     }
 
+    // a method for checking if an object should be removed on the servers Game Model
     cleanUpGameObj() {
-        let asteroids = this._gameModel.asteroids;
-        let controllers = this._gameModel.asteroidControllers;
+        let asteroids = this._gameCanvasModel.asteroids;
+        let controllers = this._gameCanvasModel.asteroidControllers;
 
         for (let asteroid of asteroids.values()) {
             let y = asteroid._property._y;
@@ -128,11 +134,16 @@ class ClientGameController {
         }
     }
 
+    // check if Game is Over
+    isGameOver() {
+
+    }
+
     updateServer() {
-        let asteroids = this._gameModel.asteroids;
+        let asteroids = this._gameCanvasModel.asteroids;
         let asteroidArray = [];
 
-        for(let ast of asteroids.values()){
+        for (let ast of asteroids.values()) {
             let astProp = ast._property;
             asteroidArray.push(astProp);
         }
@@ -143,7 +154,7 @@ class ClientGameController {
 
     // check if asteroid is hit
     asteroidIsHit() {
-        let asteroids = this._gameModel.asteroids;
+        let asteroids = this._gameCanvasModel.asteroids;
         let clientControllerObj = this;
 
         for (let asteroid of asteroids.values()) {
@@ -168,7 +179,7 @@ class ClientGameController {
 
     // Check if spaceship bullet if it hits an object
     spaceshipBulletHits(callback) {
-        let spaceships = this._gameModel.spacecrafts.values();
+        let spaceships = this._gameCanvasModel.spacecrafts.values();
         for (let spaceship of spaceships) {
             let ammos = spaceship._property._firedAmmos;
             let indx = 0;
@@ -181,8 +192,8 @@ class ClientGameController {
     }
 
     spachipIsHit() {
-        let asteroids = Array.from(this._gameModel.asteroids.values());
-        let spaceships = this._gameModel.spacecrafts.values();
+        let asteroids = Array.from(this._gameCanvasModel.asteroids.values());
+        let spaceships = this._gameCanvasModel.spacecrafts.values();
         let clientControllerObj = this;
 
         for (let spaceship of spaceships) {
@@ -229,14 +240,14 @@ class ClientGameController {
     }
 
     deleteAsteroid(asteroidId) {
-        let asteroid = this._gameModel.asteroids.get(asteroidId);
+        let asteroid = this._gameCanvasModel.asteroids.get(asteroidId);
         if (asteroid) {
             asteroid._property._status = OBJECT_STATUS.DESTROYED;
         }
         let thisObj = this;
         setTimeout(function () {
-            thisObj._gameModel.asteroids.delete(asteroidId);
-            thisObj._gameModel.asteroidControllers.delete(asteroidId);
+            thisObj._gameCanvasModel.asteroids.delete(asteroidId);
+            thisObj._gameCanvasModel.asteroidControllers.delete(asteroidId);
         }, 2500);
     }
 }
