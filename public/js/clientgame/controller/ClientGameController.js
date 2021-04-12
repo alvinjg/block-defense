@@ -80,7 +80,8 @@ class ClientGameController {
         this._clientSocket.on(sockConst.LAST_ENEMY_DEPLOYED, () => {
             this._gameCanvasModel.lastEnemyDeployed = true;
         });
-        this._clientSocket.on(sockConst.GAME_OVER, () => {
+        this._clientSocket.on(sockConst.GAME_OVER, (totalScore) => {
+            this._gameModel.score = totalScore;
             this._gameModel.isGameOver = true;
         });
     }
@@ -148,16 +149,7 @@ class ClientGameController {
         let gameModel = this._gameModel;
         let gameCanvasModel = this._gameCanvasModel;
         if (gameModel.isGameOver && !this._gameOverDisplayed) {
-
-            let ships = this._gameCanvasModel.spacecrafts;
-            let totalSpaceshipLife = 0;
-            for (let ship of ships.values()) {
-                totalSpaceshipLife += ship._property._currentLife;
-            }
-
-            let totalScore = this._gameModel.score + Math.floor(totalSpaceshipLife / ships.size);
-            this._gameModel.score = totalScore;
-            setTeamScore(totalScore);
+            setTeamScore(this._gameModel.score);
             displayGameOver(this._gameModel);
             this._gameOverDisplayed = true;
         } else {

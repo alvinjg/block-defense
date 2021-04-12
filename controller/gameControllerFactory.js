@@ -108,12 +108,25 @@ class AIGameController {
         });
     }
 
+    getTotalScore() {
+        let ships = this._canvasData.spacecrafts;
+        let totalSpaceshipLife = 0;
+        for (let ship of ships.values()) {
+            totalSpaceshipLife += ship._currentLife;
+        }
+
+        let totalScore = this._game.score + Math.floor(totalSpaceshipLife / ships.size);
+        return totalScore;
+    }
+
     gameOver() {
         if (!this._game.isGameOver) {
             this._game.isGameOver = true;
             let controllerObj = this;
             setTimeout(function () {
-                controllerObj._io.in(controllerObj._gameID).emit(constants.GAME_OVER);
+                let totalScore = controllerObj.getTotalScore();
+                controllerObj._io.in(controllerObj._gameID).emit(constants.GAME_OVER, totalScore);
+                controllerObj._game.score = totalScore;
             }, 2000);
         }
     }
