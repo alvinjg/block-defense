@@ -57,6 +57,7 @@ class Asteroid extends LivingObject {
             astProp._target_y = targetY;
             astProp._speed_x = speedX;
             astProp._speed_y = speedY;
+            ast._mini = true;
             thisObj._miniAsteroid.set(ast, cont);
         }
 
@@ -104,6 +105,22 @@ class Asteroid extends LivingObject {
     draw() {
         // this.hitEffect();
         if (OBJECT_STATUS.EXIST === this._property._status) {
+            let imgX = this._property._x - this._property._radius;
+            let imgY = this._property._y - this._property._radius;
+
+
+            // asteroid life
+            if (!this._mini) {
+                let healthWidth = this._property._radius * 2;
+                let currentHealth = this._property._currentLife / this._property._fullLife;
+                let h = 3;
+                let healtPosY = imgY - 3;
+                this._context.fillStyle = "#1bd6e3";
+                this._context.fillRect(imgX, healtPosY, healthWidth, h);
+                this._context.fillStyle = "#ff2e17";
+                this._context.fillRect(imgX, healtPosY, healthWidth * currentHealth, h);
+            }
+
             this.changeFrame();
 
             this._context.imageSmoothingEnabled = true;
@@ -111,8 +128,6 @@ class Asteroid extends LivingObject {
             // Update rows and columns
             let column = this._currentFrame % this._numOfSpriteCol;
             let row = Math.floor(this._currentFrame / this._numOfSpriteCol);
-            let imgX = this._property._x - this._property._radius;
-            let imgY = this._property._y - this._property._radius;
             // draw the frame in the sprite
             this._context.drawImage(asteroidSprite, column * this._frameWidth, row * this._frameHeight, this._frameWidth, this._frameHeight, imgX, imgY, this._property._radius * 2, this._property._radius * 2);
         } else if (OBJECT_STATUS.DESTROYED === this._property._status) {
