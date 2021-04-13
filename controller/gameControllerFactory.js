@@ -41,6 +41,20 @@ class AIGameController {
         if (this._enemyList && this._enemyList.length === 0) {
             this._io.to(this._gameID).emit(constants.LAST_ENEMY_DEPLOYED);
         }
+
+
+        // check if there are existing player
+        let ships = this._canvasData.spacecrafts;
+        let alive = 0;
+        for (let ship of ships.values()) {
+            if (obj.OBJECT_STATUS.EXIST === ship._status) {
+                alive++;
+            }
+        }
+        if (alive === 0) {
+            this.gameOver();
+        }
+
     }
 
     // refresh client once reconnected
@@ -115,7 +129,9 @@ class AIGameController {
             totalSpaceshipLife += ship._currentLife;
         }
 
-        let totalScore = this._game.score + Math.floor(totalSpaceshipLife / ships.size);
+        let shipLifeScore = Math.floor(totalSpaceshipLife / ships.size);
+        shipLifeScore = (shipLifeScore < 0) ? 0 : shipLifeScore;
+        let totalScore = this._game.score + shipLifeScore;
         return totalScore;
     }
 
@@ -192,7 +208,7 @@ class GameControllerFactory {
             if (player) {
                 player._immune = true;
                 gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
-                
+
                 // immune for 2.5 seconds
                 setTimeout(function () {
                     player._immune = false;
