@@ -9,52 +9,54 @@ class AIGameController {
         this._io = io;
         this._gameID = game.gameID;
         this._canvasData = this._game.canvasData;
-        this._enemyList = enemySets();
+        this._enemyList = JSON.parse(JSON.stringify(enemySets)); // create a copy of enemy set
+        this._runIntervalId = 0;
     }
 
     runController() {
         if (!this._game.isRunning) {
             this._game.isRunning = true;
             this._game.runningSince = new Date().getTime();
-            setInterval(() => {
+            this._runIntervalId = setInterval(() => {
                 this.run();
             }, 100);
         }
     }
 
     run() {
-        let elapsed = new Date().getTime() - this._game.runningSince;
+        if (!this._game.isGameOver) {
+            let elapsed = new Date().getTime() - this._game.runningSince;
 
-        let nextEnemyGroup = this._enemyList[0];
-        if (nextEnemyGroup && nextEnemyGroup.attackTime < elapsed) {
-            this._io.to(this._gameID).emit(constants.NEW_ENEMY_ATTACK, JSON.stringify(nextEnemyGroup));
-            this._enemyList.splice(0, 1); // remove the enemy group that already sent
+            let nextEnemyGroup = this._enemyList[0];
+            if (nextEnemyGroup && nextEnemyGroup.attackTime < elapsed) {
+                this._io.to(this._gameID).emit(constants.NEW_ENEMY_ATTACK, JSON.stringify(nextEnemyGroup));
+                this._enemyList.splice(0, 1); // remove the enemy group that already sent
 
-            // Add the sent asteroid to the servers canvas data
-            let controllerObj = this;
-            nextEnemyGroup.asteroids.forEach(function (astProp) {
-                controllerObj._canvasData.asteroids.set(astProp._id, astProp);
-            });
-        }
+                // Add the sent asteroid to the servers canvas data
+                let controllerObj = this;
+                nextEnemyGroup.asteroids.forEach(function (astProp) {
+                    controllerObj._canvasData.asteroids.set(astProp._id, astProp);
+                });
+            }
 
-        // no enemy to deploy
-        if (this._enemyList && this._enemyList.length === 0) {
-            this._io.to(this._gameID).emit(constants.LAST_ENEMY_DEPLOYED);
-        }
+            // no enemy to deploy
+            if (this._enemyList && this._enemyList.length === 0) {
+                this._io.to(this._gameID).emit(constants.LAST_ENEMY_DEPLOYED);
+            }
 
 
-        // check if there are existing player
-        let ships = this._canvasData.spacecrafts;
-        let alive = 0;
-        for (let ship of ships.values()) {
-            if (obj.OBJECT_STATUS.EXIST === ship._status) {
-                alive++;
+            // check if there are existing player
+            let ships = this._canvasData.spacecrafts;
+            let alive = 0;
+            for (let ship of ships.values()) {
+                if (obj.OBJECT_STATUS.EXIST === ship._status) {
+                    alive++;
+                }
+            }
+            if (alive === 0) {
+                this.gameOver();
             }
         }
-        if (alive === 0) {
-            this.gameOver();
-        }
-
     }
 
     // refresh client once reconnected
@@ -146,6 +148,11 @@ class AIGameController {
             }, 2000);
         }
     }
+
+    // cleanup method when this Controller object will be dismantled.
+    cleanUp() {
+        clearInterval(this._runIntervalId);
+    }
 }
 
 
@@ -200,19 +207,19 @@ class GameControllerFactory {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
                 player._currentLife = currentLife;
-                gController._io.to(gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
+                gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
             }
         });
         clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
                 player._immune = true;
-                gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
+                gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
 
                 // immune for 2.5 seconds
                 setTimeout(function () {
                     player._immune = false;
-                    gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, false);
+                    gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, false);
                 }, 2500);
             }
         });
@@ -220,7 +227,7 @@ class GameControllerFactory {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
                 player._status = obj.OBJECT_STATUS.DESTROYED;
-                gController._io.to(gameID).emit(constants.PLAYER_DESTROYED, sessionId);
+                gController._io.to(gController._gameID).emit(constants.PLAYER_DESTROYED, sessionId);
             }
         });
         clientSocket.on(constants.CLEANUP_ASTEROID, (asteroidId) => {

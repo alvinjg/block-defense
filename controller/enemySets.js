@@ -2,99 +2,127 @@ const obj = require("./gameObjectsProperty");
 const uuid = require('uuid');
 const gameEnv = require('./gameEnvironment');
 
-// List of enemies that will fight the players. Returns array of enemy object to be sent to the players at specific time.
-const newEnemySets = function(){
-    let canvasInfo= gameEnv.gameCanvasTemplate().canvasInfo;
+// Creates a list of enemies that will fight the players. Returns array of enemy object to be sent to the players at specific time.
+const enemyFactory = function () {
+    let canvasInfo = gameEnv.gameCanvasTemplate().canvasInfo;
+    let defaultAsteroid = new obj.AsteroidProperty();
+    let enemyGroups = [];
+    let ENEMY_LEVEL = {
+        "L1": 1,
+        "L2": 2,
+        "L3": 3
+    }
 
-    let newGroup = function(){
+    let newGroup = function () {
         return {
             attackTime: 3000,
-            asteroids: []   
+            asteroids: []
         };
     };
 
-    let newAsteroid = function(){
+    let newAsteroid = function (radius = defaultAsteroid._radius) {
+        let ratioFromDefault = radius / defaultAsteroid._radius;
+        let scoreVal = Math.floor(defaultAsteroid._scoreValue * ratioFromDefault);
+        let damageVal = Math.floor(defaultAsteroid._damage * ratioFromDefault);
+        let fullLife = Math.floor(defaultAsteroid._fullLife * ratioFromDefault);
+
+        if (ratioFromDefault > 1.5 && ratioFromDefault < 2) {
+            fullLife *= 3;
+            scoreVal *= 3;
+        } else if (ratioFromDefault > 3) {
+            fullLife *= 3.5;
+            scoreVal *= 3.5;
+        }
+        scoreVal = Math.floor(scoreVal);
+        fullLife = Math.floor(fullLife);
+        
+
+        // compute inverse propostionality of speed to radius
+        let constantProportionality = defaultAsteroid._speed_y * defaultAsteroid._radius;
+        let downSpeed = constantProportionality / radius;
+
         let astProp = new obj.AsteroidProperty();
         astProp._id = uuid.v4();
+        astProp._radius = radius;
 
-        astProp._x = Math.floor(canvasInfo.width / 2) - Math.floor(astProp._width / 2);
+        let startXRange = (canvasInfo.width - (astProp._radius * 2));
+        astProp._x = (Math.random() * startXRange) + astProp._radius;
         astProp._y = -20;
+        astProp._speed_y = downSpeed;
+        astProp._scoreValue = scoreVal;
+        astProp._damage = damageVal;
+        astProp._fullLife = fullLife;
+        astProp._currentLife = fullLife;
 
         return astProp;
     };
 
-    let asteroid = null;
+    let attackCreator = function (elapsed, enemyGroups, level, delay = 3000) {
+        let nextAttack = elapsed + delay;
 
-    // runs after 5 seconds
-    let group1 = newGroup();
-    group1.attackTime = 5000;
-    asteroid = newAsteroid();
-    asteroid._x -= 20;
-    group1.asteroids.push(asteroid); 
+        if (ENEMY_LEVEL.L1 === level) {
+            let group = newGroup();
+            group.attackTime = elapsed;
 
-    // runs after 10 seconds
-    let group2 = newGroup();
-    group2.attackTime = 10000;
-    asteroid = newAsteroid();
-    asteroid._x -= 200;
-    asteroid._speed_y = 0.2;
-    group2.asteroids.push(asteroid); 
-    asteroid = newAsteroid();
-    asteroid._x += 300;
-    asteroid._speed_y = 0.2;
-    group2.asteroids.push(asteroid); 
-    asteroid = newAsteroid();
-    asteroid._x += 150;
-    asteroid._speed_y = 0.2;
-    group2.asteroids.push(asteroid); 
+            let asteroidNum = 1;
+            for (let i = 0; i < asteroidNum; i++) {
+                let asteroid = newAsteroid();
+                group.asteroids.push(asteroid);
+            }
+            enemyGroups.push(group);
+        }
 
-    // runs after 15 seconds
-    let group3 = newGroup();
-    group3.attackTime = 15000;
-    asteroid = newAsteroid();
-    asteroid._x = 20;
-    group3.asteroids.push(asteroid); 
+        if (ENEMY_LEVEL.L2 === level) {
+            let asteroidNum = Math.floor(Math.random() * 2) + 1;
+            for (let i = 0; i < asteroidNum; i++) {
+                let group = newGroup();
+                group.attackTime = elapsed + (Math.random() * 2000);
 
-     // runs after 25 seconds
-     let group4 = newGroup();
-     group4.attackTime = 25000;
-     asteroid = newAsteroid();
-     asteroid._x = 75;
-     asteroid._speed_y = 0.6;
-     group4.asteroids.push(asteroid);
-     asteroid = newAsteroid();
-     asteroid._x = 243;
-     asteroid._speed_y = 0.1;
-     group4.asteroids.push(asteroid);
-     asteroid = newAsteroid();
-     asteroid._x = 600;
-     asteroid._speed_y = 0.7;
-     group4.asteroids.push(asteroid);
+                let asteroid = newAsteroid(50);
+                group.asteroids.push(asteroid);
 
-     // runs after 30 seconds
-     let group5 = newGroup();
-     group5.attackTime = 30000;
-     asteroid = newAsteroid();
-     asteroid._x = 700;
-     asteroid._speed_y = 0.6;
-     group5.asteroids.push(asteroid);
+                enemyGroups.push(group);
+                nextAttack = elapsed + delay + (Math.random() * 3000);
+            }
+        }
 
+        if (ENEMY_LEVEL.L3 === level) {
+            let asteroidNum = 1;
+            for (let i = 0; i < asteroidNum; i++) {
+                let group = newGroup();
+                group.attackTime = elapsed + (Math.random() * 2000);
 
-     let group6 = newGroup();
-     group6.attackTime = 32000;
-     asteroid = newAsteroid();
-     asteroid._x = 500;
-     asteroid._speed_y = 0.1;
-     group6.asteroids.push(asteroid);
+                let asteroid = newAsteroid(100);
+                group.asteroids.push(asteroid);
 
-    return [
-        group1,
-        group2,
-        group3,
-        group4,
-        group5,
-        group6
-    ];
+                enemyGroups.push(group);
+                nextAttack = elapsed + delay + (Math.random() * 3000);
+            }
+        }
+
+        return nextAttack;
+    }
+
+    let maxDuration = 300000;
+    let nextAttack = 3000;
+    let nextAttack2 = 15000;
+    let nextAttack3 = 30000;
+    for (let elapsed = 300; elapsed <= maxDuration; elapsed += 100) {
+        if (nextAttack < elapsed) {
+            nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
+        }
+        if (nextAttack2 < elapsed) {
+            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 15000);
+        }
+        if (nextAttack3 < elapsed) {
+            nextAttack3 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L3, 30000);
+        }
+    }
+
+    enemyGroups.sort((a, b) => (a.attackTime > b.attackTime) ? 1 : -1)
+    return enemyGroups;
 };
+
+const newEnemySets = enemyFactory();
 
 module.exports = newEnemySets;
