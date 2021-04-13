@@ -68,7 +68,6 @@ class ClientGameController {
             let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
             if (spaceship) {
                 spaceship._property._immune = immuneFlag;
-
             }
         });
         this._clientSocket.on(sockConst.PLAYER_DESTROYED, (sessionId) => {
@@ -237,12 +236,8 @@ class ClientGameController {
                             clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
                         } else {
 
-                            // immune for 2.5 seconds when hit by asteroid
                             shipProp._immune = true;
-                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, true);
-                            setTimeout(function () {
-                                clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, false);
-                            }, 2500);
+                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId);
                         }
 
                         // notify every one that player is hit

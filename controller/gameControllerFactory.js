@@ -187,11 +187,17 @@ class GameControllerFactory {
                 gController._io.to(gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
             }
         });
-        clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId, immuneFlag) => {
+        clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
-                player._immune = immuneFlag;
-                gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, immuneFlag);
+                player._immune = true;
+                gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
+                
+                // immune for 2.5 seconds
+                setTimeout(function () {
+                    player._immune = false;
+                    gController._io.to(gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, false);
+                }, 2500);
             }
         });
         clientSocket.on(constants.PLAYER_DESTROYED, (sessionId) => {
