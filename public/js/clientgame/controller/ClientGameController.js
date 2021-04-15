@@ -235,9 +235,6 @@ class ClientGameController {
                     if (collided && !shipProp._immune) {
                         spaceship.hit(asteroid._property._damage);
 
-                        // notify every one that player is hit
-                        clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
-
                         // delete player if Destroyed
                         if (shipProp._currentLife <= 0) {
                             shipProp._currentLife = 0;
@@ -248,6 +245,9 @@ class ClientGameController {
                             shipProp._immune = true;
                             clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, shipProp._currentLife);
                         }
+
+                        // notify every one that player is hit
+                        clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
                     }
                 }
             }

@@ -209,13 +209,14 @@ class GameControllerFactory {
         clientSocket.on(constants.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
-                if (player._immune) {
-                    // if immune return the server copy of player life
-                    gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, player._currentLife);
-                } else {
-                    player._currentLife = currentLife;
-                    gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
-                }
+                // there is a bug where player life recieve multiple damage from other client connection even though its already immune.
+                // as a workaround the life update is done in PLAYER_IS_IMMUNE event. then this method will just throw the player current life
+                // player._currentLife = currentLife;
+                // gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
+
+                // just throw the current life without updating it.
+                gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, player._currentLife);
+
             }
         });
         clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId, currentLife) => {
