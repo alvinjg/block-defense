@@ -10,7 +10,8 @@ const enemyFactory = function () {
     let ENEMY_LEVEL = {
         "L1": 1,
         "L2": 2,
-        "L3": 3
+        "L3": 3,
+        "L4": 4
     }
 
     let newGroup = function () {
@@ -30,15 +31,15 @@ const enemyFactory = function () {
         let constantProportionality = defaultAsteroid._speed_y * defaultAsteroid._radius;
         let downSpeed = constantProportionality / radius;
 
-        if (ratioFromDefault > 1.5 && ratioFromDefault <= 3) {
+        if (ratioFromDefault > 1.5 && ratioFromDefault <= 2) {
             fullLife *= 3;
             scoreVal *= 3;
-        } else if (ratioFromDefault > 3 && ratioFromDefault <= 4) {
+        } else if (ratioFromDefault > 2 && ratioFromDefault <= 4) {
             fullLife *= 3.2;
             scoreVal *= 3.2;
         } else if (ratioFromDefault > 4 && ratioFromDefault <= 6) {
-            fullLife *= 3.5;
-            scoreVal *= 3.5;
+            fullLife *= 4;
+            scoreVal *= 4;
         } else if (ratioFromDefault > 6) {
             fullLife *= 25;
             scoreVal *= 25;
@@ -79,12 +80,12 @@ const enemyFactory = function () {
         }
 
         if (ENEMY_LEVEL.L2 === level) {
-            let asteroidNum = Math.floor(Math.random() * 2) + 1;
+            let asteroidNum = Math.round(Math.random() * 3) + 1;
             for (let i = 0; i < asteroidNum; i++) {
                 let group = newGroup();
                 group.attackTime = elapsed + (Math.random() * 2000);
 
-                let size = Math.floor(90 + (Math.random() * defaultAsteroid._radius));
+                let size = Math.floor(30 + (Math.random() * defaultAsteroid._radius));
                 let asteroid = newAsteroid(size);
                 group.asteroids.push(asteroid);
 
@@ -99,7 +100,22 @@ const enemyFactory = function () {
                 let group = newGroup();
                 group.attackTime = elapsed + (Math.random() * 2000);
 
-                let size = Math.floor(120 + (Math.random() * defaultAsteroid._radius * 2));
+                let size = Math.floor(60 + (Math.random() * (defaultAsteroid._radius * 2)));
+                let asteroid = newAsteroid(size);
+                group.asteroids.push(asteroid);
+
+                enemyGroups.push(group);
+                nextAttack = elapsed + delay + (Math.random() * 3000);
+            }
+        }
+
+        if (ENEMY_LEVEL.L4 === level) {
+            let asteroidNum = 1;
+            for (let i = 0; i < asteroidNum; i++) {
+                let group = newGroup();
+                group.attackTime = elapsed + (Math.random() * 2000);
+
+                let size = Math.floor(120 + (Math.random() * defaultAsteroid._radius));
                 let asteroid = newAsteroid(size);
                 group.asteroids.push(asteroid);
 
@@ -112,25 +128,51 @@ const enemyFactory = function () {
     }
 
     let maxDuration = 300000;
+    let stage1End = Math.floor(maxDuration * 0.75);
+    let stage2End = maxDuration;
+
     let nextAttack = 3000;
     let nextAttack2 = 15000;
     let nextAttack3 = 30000;
-    for (let elapsed = 300; elapsed <= maxDuration; elapsed += 100) {
+    let nextAttack4 = 45000;
+    for (let elapsed = 300; elapsed <= stage1End; elapsed += 100) {
         if (nextAttack < elapsed) {
             nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
         }
         if (nextAttack2 < elapsed) {
-            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 15000);
+            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 10000);
         }
         if (nextAttack3 < elapsed) {
-            nextAttack3 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L3, 30000);
+            nextAttack3 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L3, 20000);
+        }
+        if (nextAttack4 < elapsed) {
+            nextAttack4 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L4, 35000);
+        }
+    }
+
+    let timeout = 10000;
+    nextAttack += timeout;
+    nextAttack2 += timeout;
+    nextAttack3 += timeout;
+    nextAttack4 += timeout;
+    for (let elapsed = (stage1End + timeout); elapsed <= stage2End; elapsed += 100) {
+        if (nextAttack < elapsed) {
+            nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
+            nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
+        }
+
+        if (nextAttack2 < elapsed) {
+            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 15000);
+        }
+        if (nextAttack4 < elapsed) {
+            nextAttack4 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L4, 20000);
         }
     }
 
     // last big asteroid
     let group = newGroup();
-    group.attackTime = maxDuration - 60000;
-    let asteroid = newAsteroid(250);
+    group.attackTime = (stage1End + 5000);
+    let asteroid = newAsteroid(220);
     group.asteroids.push(asteroid);
     enemyGroups.push(group);
 

@@ -132,7 +132,7 @@ class AIGameController {
             totalSpaceshipLife += shipLife;
         }
 
-        let bonusScore = Math.floor(5000 / ships.size);
+        let bonusScore = Math.floor(7000 / ships.size);
         let shipLifeScore = Math.floor(totalSpaceshipLife / ships.size);
         shipLifeScore = (shipLifeScore < 0) ? 0 : shipLifeScore;
         let totalScore = this._game.score + shipLifeScore + bonusScore;
