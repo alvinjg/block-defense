@@ -232,7 +232,7 @@ class ClientGameController {
                     // check if spaship collides with asteroid
                     let collided = spaceship.isCollided(asteroid._property._x, asteroid._property._y, asteroid._property._radius);
                     let shipProp = spaceship._property;
-                    if (collided && !shipProp._immune) {
+                    if (collided && !shipProp._immune && shipProp._status !== OBJECT_STATUS.DESTROYED) {
                         spaceship.hit(asteroid._property._damage);
 
                         // delete player if Destroyed
