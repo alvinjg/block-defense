@@ -85,7 +85,8 @@ const gameServer = (io, clientSocket) => {
             spacecraft._x = movementObj.x;
             spacecraft._y = movementObj.y;
 
-            io.to(gameid).emit(constants.MOVE_PLAYER, JSON.stringify(movementObj));
+            // send the movement to other players. The client modifies his movement locally.
+            clientSocket.to(gameid).emit(constants.MOVE_PLAYER, JSON.stringify(movementObj));
         }
     });
 

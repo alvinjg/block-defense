@@ -33,7 +33,7 @@ const initGameCanvas = (canvas, clientSocket, myGameSession) => {
             gameController.spachipIsHit();
         }, 15);
 
-        // interval for moving objects in canvas; Required to see movement in canvas
+        // interval for moving objects in canvas locally; Required to see movement in canvas
         canvasControllerIntervalId = setInterval(() => {
             gameController.moveModelObjects();
         }, 15);

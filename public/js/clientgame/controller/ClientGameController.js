@@ -62,6 +62,10 @@ class ClientGameController {
             setTeamScore(score);
         });
         this._clientSocket.on(sockConst.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
+            let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
+            if (spaceship) {
+                spaceship._property._currentLife = currentLife;
+            }
             updatePlayerLife(sessionId, currentLife);
         });
         this._clientSocket.on(sockConst.PLAYER_IS_IMMUNE, (sessionId, immuneFlag) => {
@@ -74,6 +78,7 @@ class ClientGameController {
             let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
             if (spaceship) {
                 spaceship._property._status = OBJECT_STATUS.DESTROYED;
+                spaceship._property._currentLife = 0;
             }
         });
         this._clientSocket.on(sockConst.LAST_ENEMY_DEPLOYED, () => {
@@ -232,6 +237,7 @@ class ClientGameController {
 
                         // delete player if Destroyed
                         if (shipProp._currentLife <= 0) {
+                            shipProp._currentLife = 0;
                             shipProp._status = OBJECT_STATUS.DESTROYED;
                             clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
                         } else {

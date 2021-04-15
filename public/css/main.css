@@ -21,14 +21,18 @@ div.spacer {
 }
 
 .team-container .players .tile{
-    height: 100px;
-    width: 150px;
+    height: 150px;
+    width: 200px;
     background-color: #41a7e299;
     text-align: center;
     display: inline-block;
     margin-top: 5px;
     margin-right: 5px;
     align-items: center;
+}
+
+.team-container .players img{
+    height: 75%;
 }
 
 .team-container .players .tile.my-player{

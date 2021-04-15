@@ -128,12 +128,14 @@ class AIGameController {
         let ships = this._canvasData.spacecrafts;
         let totalSpaceshipLife = 0;
         for (let ship of ships.values()) {
-            totalSpaceshipLife += ship._currentLife;
+            let shipLife = (ship._currentLife <= 0) ? 0 : ship._currentLife;
+            totalSpaceshipLife += shipLife;
         }
 
+        let bonusScore = Math.floor(5000 / ships.size);
         let shipLifeScore = Math.floor(totalSpaceshipLife / ships.size);
         shipLifeScore = (shipLifeScore < 0) ? 0 : shipLifeScore;
-        let totalScore = this._game.score + shipLifeScore;
+        let totalScore = this._game.score + shipLifeScore + bonusScore;
         return totalScore;
     }
 
@@ -227,7 +229,9 @@ class GameControllerFactory {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
                 player._status = obj.OBJECT_STATUS.DESTROYED;
+                player._currentLife = 0;
                 gController._io.to(gController._gameID).emit(constants.PLAYER_DESTROYED, sessionId);
+                gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, player._currentLife);
             }
         });
         clientSocket.on(constants.CLEANUP_ASTEROID, (asteroidId) => {

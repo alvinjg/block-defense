@@ -30,7 +30,10 @@ class SpacecraftController {
             movementObj = JSON.parse(movementObj);
             let sessId = movementObj.sessionId;
             let shipSessId = this._spaceship._property._sessionId;
-            if (sessId === shipSessId) {
+
+            // set the movement of other player ship
+            // the player movement will be rendered locally
+            if (sessId !== myGameSession.id && sessId === shipSessId) {
                 let queue = this._movementQueue;
                 let lastIndex = queue.length;
                 let lastmove = null;
@@ -53,7 +56,7 @@ class SpacecraftController {
 
                 lastmove = queue[queue.length - 1];
                 this._spaceship._property._target_x = lastmove.x;
-                this._spaceship._property._target_y = lastmove.y
+                this._spaceship._property._target_y = lastmove.y;
 
                 // remove the first 6 movement in the queue
                 if (queue.length > 8) {
@@ -221,6 +224,11 @@ class SpacecraftController {
 
     sendPendingMovement() {
         if (this._isMoved) {
+            // locally set the next movement of local player
+            this._spaceship._property._target_x = this._newMovement.x;
+            this._spaceship._property._target_y = this._newMovement.y;
+            
+            // send the movement of local player to other player
             this._newMovement.timestamp = new Date().getTime();
             this._clientSocket.emit(sockConst.MOVE_PLAYER, this._newMovement);
             this._isMoved = false;

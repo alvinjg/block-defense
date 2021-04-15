@@ -71,11 +71,19 @@ function setLobby_refreshPlayerTile(players) {
             if (player.isConnected) {
                 let div = document.createElement('div');
                 div.classList.add('tile');
-                div.innerText = player.name;
+
+                let divName = document.createElement('div');
+                divName.innerText = player.name;
+                div.appendChild(divName);
+
                 div.style.backgroundColor = player.color + "6e";
                 if (player.id === myGameSession.id) {
                     div.classList.add('my-player');
                 }
+
+                let img = document.createElement('img');
+                img.setAttribute("src", "/img/ally-destroyer.png");
+                div.appendChild(img);
 
                 playerContainer.appendChild(div);
             }
