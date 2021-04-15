@@ -26,20 +26,26 @@ const enemyFactory = function () {
         let damageVal = Math.floor(defaultAsteroid._damage * ratioFromDefault);
         let fullLife = Math.floor(defaultAsteroid._fullLife * ratioFromDefault);
 
-        if (ratioFromDefault > 1.5 && ratioFromDefault < 2) {
-            fullLife *= 3;
-            scoreVal *= 3;
-        } else if (ratioFromDefault > 3) {
-            fullLife *= 3.5;
-            scoreVal *= 3.5;
-        }
-        scoreVal = Math.floor(scoreVal);
-        fullLife = Math.floor(fullLife);
-        
-
         // compute inverse propostionality of speed to radius
         let constantProportionality = defaultAsteroid._speed_y * defaultAsteroid._radius;
         let downSpeed = constantProportionality / radius;
+
+        if (ratioFromDefault > 1.5 && ratioFromDefault <= 3) {
+            fullLife *= 3;
+            scoreVal *= 3;
+        } else if (ratioFromDefault > 3 && ratioFromDefault <= 4) {
+            fullLife *= 3.2;
+            scoreVal *= 3.2;
+        } else if (ratioFromDefault > 4 && ratioFromDefault <= 6) {
+            fullLife *= 3.5;
+            scoreVal *= 3.5;
+        } else if (ratioFromDefault > 6) {
+            fullLife *= 25;
+            scoreVal *= 25;
+        }
+        scoreVal = Math.floor(scoreVal);
+        fullLife = Math.floor(fullLife);
+
 
         let astProp = new obj.AsteroidProperty();
         astProp._id = uuid.v4();
@@ -78,7 +84,8 @@ const enemyFactory = function () {
                 let group = newGroup();
                 group.attackTime = elapsed + (Math.random() * 2000);
 
-                let asteroid = newAsteroid(50);
+                let size = Math.floor(90 + (Math.random() * defaultAsteroid._radius));
+                let asteroid = newAsteroid(size);
                 group.asteroids.push(asteroid);
 
                 enemyGroups.push(group);
@@ -92,7 +99,8 @@ const enemyFactory = function () {
                 let group = newGroup();
                 group.attackTime = elapsed + (Math.random() * 2000);
 
-                let asteroid = newAsteroid(100);
+                let size = Math.floor(120 + (Math.random() * defaultAsteroid._radius * 2));
+                let asteroid = newAsteroid(size);
                 group.asteroids.push(asteroid);
 
                 enemyGroups.push(group);
@@ -118,6 +126,13 @@ const enemyFactory = function () {
             nextAttack3 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L3, 30000);
         }
     }
+
+    // last big asteroid
+    let group = newGroup();
+    group.attackTime = maxDuration - 60000;
+    let asteroid = newAsteroid(250);
+    group.asteroids.push(asteroid);
+    enemyGroups.push(group);
 
     enemyGroups.sort((a, b) => (a.attackTime > b.attackTime) ? 1 : -1)
     return enemyGroups;

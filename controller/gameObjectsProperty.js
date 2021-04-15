@@ -156,7 +156,7 @@ class AsteroidProperty extends LivingObjectProperty {
         this._height = this._radius;
         this._color = '#de1d38';
         this._scoreValue = 100;
-        this._damage = 1000;
+        this._damage = 750;
     }
 }
 
@@ -168,7 +168,7 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._y = 20;
         this._radius = 35;
         this._totalRadius = this._radius;
-        this._fullLife = 10000;
+        this._fullLife = 15000;
         this._currentLife = this._fullLife;
         this._speed_x = 4;
         this._speed_y = 4;
