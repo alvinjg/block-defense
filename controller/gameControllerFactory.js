@@ -142,6 +142,7 @@ class AIGameController {
     gameOver() {
         if (!this._game.isGameOver) {
             this._game.isGameOver = true;
+            this._game.gameOverOn = new Date().getTime();
             let controllerObj = this;
             setTimeout(function () {
                 let totalScore = controllerObj.getTotalScore();
@@ -208,21 +209,29 @@ class GameControllerFactory {
         clientSocket.on(constants.UPDATE_PLAYER_LIFE, (sessionId, currentLife) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
-                player._currentLife = currentLife;
-                gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
+                if (player._immune) {
+                    // if immune return the server copy of player life
+                    gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, player._currentLife);
+                } else {
+                    player._currentLife = currentLife;
+                    gController._io.to(gController._gameID).emit(constants.UPDATE_PLAYER_LIFE, sessionId, currentLife);
+                }
             }
         });
-        clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId) => {
+        clientSocket.on(constants.PLAYER_IS_IMMUNE, (sessionId, currentLife) => {
             let player = gController._canvasData.spacecrafts.get(sessionId);
             if (player) {
-                player._immune = true;
-                gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
+                if (!player._immune) {
+                    player._immune = true;
+                    player._currentLife = currentLife;
+                    gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, true);
 
-                // immune for 2.5 seconds
-                setTimeout(function () {
-                    player._immune = false;
-                    gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, false);
-                }, 2500);
+                    // immune for 2.5 seconds
+                    setTimeout(function () {
+                        player._immune = false;
+                        gController._io.to(gController._gameID).emit(constants.PLAYER_IS_IMMUNE, sessionId, false);
+                    }, 2500);
+                }
             }
         });
         clientSocket.on(constants.PLAYER_DESTROYED, (sessionId) => {
