@@ -8,7 +8,8 @@ const OBJ_MOVEMENT = {
 };
 const MOVEMENT_TYPE = {
     "IDLE":0,
-    "DOWN": 1
+    "DOWN": 1,
+    "ZIGZAG": 2
 };
 const OBJECT_STATUS = {
     "EXIST": 0,

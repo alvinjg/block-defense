@@ -16,6 +16,24 @@ class AsteroidController {
                 this._asteroid._property._target_y = movementObj.y;
             });
         }
+
+
+
+        if (MOVEMENT_TYPE.ZIGZAG === this._asteroid._property._movementType) {
+            let rand = Math.random() > 0.5;
+            if (rand) {
+                this._asteroid._property._target_x = this._asteroid._canvas.width;
+                this._ZIGZAG_TO_RIGHT = true;
+            } else {
+                this._asteroid._property._target_x = 0;
+                this._ZIGZAG_TO_RIGHT = false;
+            }
+
+
+
+
+            this._asteroid._property._target_y = this._asteroid._canvas.height + 20;
+        }
     }
 
     // actual movement of spaceship in canvas
@@ -48,6 +66,23 @@ class AsteroidController {
 
         if (MOVEMENT_TYPE.DOWN === this._asteroid._property._movementType) {
             this._asteroid._property._target_y = this._asteroid._canvas.height + 20;
+        }
+        if (MOVEMENT_TYPE.ZIGZAG === this._asteroid._property._movementType) {
+            let x = this._asteroid._property._x;
+            let borderMax = this._asteroid._canvas.width - this._asteroid._property._radius - 10;
+            let borderMin = this._asteroid._property._radius + 10;
+            if (this._ZIGZAG_TO_RIGHT) {
+                if (x > borderMax) {
+                    this._ZIGZAG_TO_RIGHT = false;
+                    this._asteroid._property._target_x = 0;
+                }
+            } else {
+                if (x < borderMin) {
+                    this._ZIGZAG_TO_RIGHT = true;
+                    this._asteroid._property._target_x = this._asteroid._canvas.width;
+                }
+            }
+
         }
     }
 

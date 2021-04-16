@@ -9,7 +9,8 @@ const OBJ_MOVEMENT = {
 };
 const MOVEMENT_TYPE = {
     "IDLE": 0,
-    "DOWN": 1
+    "DOWN": 1,
+    "ZIGZAG": 2
 };
 const OBJECT_STATUS = {
     "EXIST": 0,
@@ -186,5 +187,6 @@ class SpacecraftProperty extends LivingObjectProperty {
 }
 
 module.exports.OBJECT_STATUS = OBJECT_STATUS;
+module.exports.MOVEMENT_TYPE = MOVEMENT_TYPE;
 module.exports.SpacecraftProperty = SpacecraftProperty;
 module.exports.AsteroidProperty = AsteroidProperty;

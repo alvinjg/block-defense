@@ -74,6 +74,11 @@ const enemyFactory = function () {
             let asteroidNum = 1;
             for (let i = 0; i < asteroidNum; i++) {
                 let asteroid = newAsteroid();
+                asteroid._speed_x = 0.7;
+                let randMove = Math.random() > 0.3;
+                if (randMove) {
+                    asteroid._movementType = obj.MOVEMENT_TYPE.ZIGZAG;
+                }
                 group.asteroids.push(asteroid);
             }
             enemyGroups.push(group);
