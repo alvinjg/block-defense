@@ -35,8 +35,8 @@ const enemyFactory = function () {
             fullLife *= 3;
             scoreVal *= 3;
         } else if (ratioFromDefault > 2 && ratioFromDefault <= 4) {
-            fullLife *= 5;
-            scoreVal *= 5;
+            fullLife *= 4.5;
+            scoreVal *= 4.5;
         } else if (ratioFromDefault > 4 && ratioFromDefault <= 6) {
             fullLife *= 7;
             scoreVal *= 7;
@@ -164,12 +164,10 @@ const enemyFactory = function () {
         if (nextAttack < elapsed) {
             nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
             nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
-            nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
         }
 
         if (nextAttack2 < elapsed) {
             nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 25000);
-            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 15000);
         }
         if (nextAttack4 < elapsed) {
             nextAttack4 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L4, 20000);
