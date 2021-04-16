@@ -38,8 +38,8 @@ const enemyFactory = function () {
             fullLife *= 5;
             scoreVal *= 5;
         } else if (ratioFromDefault > 4 && ratioFromDefault <= 6) {
-            fullLife *= 10;
-            scoreVal *= 10;
+            fullLife *= 7;
+            scoreVal *= 7;
         } else if (ratioFromDefault > 6) {
             fullLife *= 25;
             scoreVal *= 25;

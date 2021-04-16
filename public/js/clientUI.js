@@ -114,6 +114,10 @@ function displayPing(pingMs) {
     if (pingNum) {
         pingNum.className = "";
 
+        if (pingMs < 0) {
+            pingMs = 1;
+        }
+
         if (pingMs < 300) {
             pingNum.classList.add("green");
         } else if (pingMs < 400) {
