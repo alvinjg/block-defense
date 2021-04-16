@@ -168,6 +168,7 @@ const enemyFactory = function () {
         }
 
         if (nextAttack2 < elapsed) {
+            nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 25000);
             nextAttack2 = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L2, 15000);
         }
         if (nextAttack4 < elapsed) {
