@@ -29,6 +29,7 @@ const gameServer = (io, clientSocket) => {
                         spacecraftProp._sessionId = player.id;
                         spacecraftProp._color = player.color;
                         spacecraftProp._playerName = player.name;
+                        spacecraftProp._indexPosition = ctr - 1;
 
                         // start position of player in canvas
                         let tempStartX = startX + (((spacecraftProp._totalRadius * 2) + 5) * ctr);
@@ -68,7 +69,7 @@ const gameServer = (io, clientSocket) => {
                 gameCopy.canvasData = canvasDataCopy;
 
                 clientSocket.emit(constants.INIT_GAME_CANVAS, JSON.stringify(gameCopy));
-                
+
                 gameCtrlFactory.refreshClient(clientSocket, game.gameID);
             }
         }

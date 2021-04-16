@@ -57,24 +57,30 @@ class Asteroid extends LivingObject {
             astProp._target_y = targetY;
             astProp._speed_x = speedX;
             astProp._speed_y = speedY;
+            astProp._damage = 100;
             ast._mini = true;
             thisObj._miniAsteroid.set(ast, cont);
         }
 
         const randSpeed = () => {
-            return Math.random() * 3;
+            return Math.random() * 1.3;
         };
 
         const randPoint = () => {
             return (Math.random() * 150) + 400;
         };
 
-        let rand = (Math.random() * 2) + 1;
-        for (let i = 0; i < rand; i++) {
+
+
+        createSingleAsteroid(this._property._x - randPoint(), this._property._y - randPoint(), randSpeed(), randSpeed());
+        createSingleAsteroid(this._property._x + randPoint(), this._property._y - randPoint(), randSpeed(), randSpeed());
+        createSingleAsteroid(this._property._x + randPoint(), this._property._y + randPoint(), randSpeed(), randSpeed());
+        createSingleAsteroid(this._property._x - randPoint(), this._property._y + randPoint(), randSpeed(), randSpeed());
+
+        let additional = Math.random() > 0.8;
+        if (additional) {
             createSingleAsteroid(this._property._x - randPoint(), this._property._y - randPoint(), randSpeed(), randSpeed());
-            createSingleAsteroid(this._property._x + randPoint(), this._property._y - randPoint(), randSpeed(), randSpeed());
             createSingleAsteroid(this._property._x + randPoint(), this._property._y + randPoint(), randSpeed(), randSpeed());
-            createSingleAsteroid(this._property._x - randPoint(), this._property._y + randPoint(), randSpeed(), randSpeed());
         }
     }
 
@@ -115,7 +121,7 @@ class Asteroid extends LivingObject {
                 let currentHealth = this._property._currentLife / this._property._fullLife;
                 let h = 3;
                 let healtPosY = imgY - 3;
-                this._context.fillStyle = "#0a4f54";
+                this._context.fillStyle = "#395254";
                 this._context.fillRect(imgX, healtPosY, healthWidth, h);
                 this._context.fillStyle = "#ff2e17";
                 this._context.fillRect(imgX, healtPosY, healthWidth * currentHealth, h);

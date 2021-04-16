@@ -8,7 +8,7 @@ const OBJ_MOVEMENT = {
     "RIGHT": 4
 };
 const MOVEMENT_TYPE = {
-    "IDLE":0,
+    "IDLE": 0,
     "DOWN": 1
 };
 const OBJECT_STATUS = {
@@ -181,6 +181,7 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._totalRadius = this._radius + Math.floor(this._strokeWidth / 2);
         this._immune = false;
         this._playerName = null;
+        this._indexPosition = 0;
     }
 }
 

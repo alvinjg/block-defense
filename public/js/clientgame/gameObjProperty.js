@@ -180,5 +180,6 @@ class SpacecraftProperty extends LivingObjectProperty {
         this._totalRadius = this._radius + Math.floor(this._strokeWidth/2);
         this._immune = false;
         this._playerName = null;
+        this._indexPosition = 0;
     }
 }

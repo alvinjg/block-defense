@@ -60,7 +60,7 @@ class Spacecraft extends LivingObject {
 
             // Select the image in row 0, column 4
             let row = 0;
-            let column = 4;
+            let column = this._property._indexPosition % this._numOfSpriteCol;
             let imgX = this._property._x - this._property._radius;
             let imgY = this._property._y - this._property._radius;
             // draw the frame in the sprite

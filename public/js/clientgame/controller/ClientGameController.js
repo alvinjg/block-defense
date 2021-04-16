@@ -72,6 +72,9 @@ class ClientGameController {
             let spaceship = this._gameCanvasModel.spacecrafts.get(sessionId);
             if (spaceship) {
                 spaceship._property._immune = immuneFlag;
+                if(immuneFlag){
+                    spaceship._lastHitTime = new Date();
+                }
             }
         });
         this._clientSocket.on(sockConst.PLAYER_DESTROYED, (sessionId) => {
@@ -224,6 +227,28 @@ class ClientGameController {
         let spaceships = this._gameCanvasModel.spacecrafts.values();
         let clientControllerObj = this;
 
+        // actual routine when the spachip was hit
+        const hitTheShip = function (spaceship, asteroid) {
+            let shipProp = spaceship._property;
+            if (!shipProp._immune && shipProp._status !== OBJECT_STATUS.DESTROYED) {
+                spaceship.hit(asteroid._property._damage);
+
+                // delete player if Destroyed
+                if (shipProp._currentLife <= 0) {
+                    shipProp._currentLife = 0;
+                    shipProp._status = OBJECT_STATUS.DESTROYED;
+                    clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
+                } else {
+
+                    shipProp._immune = true;
+                    clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, shipProp._currentLife);
+                }
+
+                // notify every one that player is hit
+                clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
+            }
+        }
+
         for (let spaceship of spaceships) {
 
             for (let i = 0; i < asteroids.length; i++) {
@@ -231,23 +256,17 @@ class ClientGameController {
                 if (OBJECT_STATUS.EXIST === asteroid._property._status) {
                     // check if spaship collides with asteroid
                     let collided = spaceship.isCollided(asteroid._property._x, asteroid._property._y, asteroid._property._radius);
-                    let shipProp = spaceship._property;
-                    if (collided && !shipProp._immune && shipProp._status !== OBJECT_STATUS.DESTROYED) {
-                        spaceship.hit(asteroid._property._damage);
-
-                        // delete player if Destroyed
-                        if (shipProp._currentLife <= 0) {
-                            shipProp._currentLife = 0;
-                            shipProp._status = OBJECT_STATUS.DESTROYED;
-                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_DESTROYED, shipProp._sessionId);
-                        } else {
-
-                            shipProp._immune = true;
-                            clientControllerObj._clientSocket.emit(sockConst.PLAYER_IS_IMMUNE, shipProp._sessionId, shipProp._currentLife);
+                    if (collided) {
+                        hitTheShip(spaceship, asteroid);
+                    }
+                }
+                // Check if the local user is hit by a mini asteroid
+                if (OBJECT_STATUS.DESTROYED === asteroid._property._status && spaceship._property._sessionId === myGameSession.id) {
+                    for (let miniAst of asteroid._miniAsteroid.keys()) {
+                        let collided = spaceship.isCollided(miniAst._property._x, miniAst._property._y, miniAst._property._radius);
+                        if (collided) {
+                            hitTheShip(spaceship, miniAst);
                         }
-
-                        // notify every one that player is hit
-                        clientControllerObj._clientSocket.emit(sockConst.UPDATE_PLAYER_LIFE, shipProp._sessionId, shipProp._currentLife);
                     }
                 }
             }
