@@ -13,9 +13,17 @@
         <div id="startGame" class="row d-none" data-leader="{{leaderId}}">
             <div class="mx-auto mt-5">
                 {{!-- <form class="form" action="{{host}}/api/game/start/{{gameid}}" method="GET"> --}}
-                    <button id="startGameButton" type="button" class="btn btn-secondary btn-lg btn-block">Start Game #{{gameid}}</button>
-                {{!-- </form> --}}
+                    <button id="startGameButton" type="button" class="btn btn-secondary btn-lg btn-block">Start Game
+                        #{{gameid}}</button>
+                    {{!--
+                </form> --}}
             </div>
         </div>
+    </div>
+    <div id="canvasResource" class="d-none">
+        <img id="asteroidSprite" src="/img/asteroid-sprite.png" />
+        <img id="allyShip" src="/img/ally-ship.png" />
+        <img id="alienShip" src="/img/alien-ship.png" />
+        <img id="extraShip" src="/img/extra-ship.png" />
     </div>
 </body>

@@ -18,11 +18,11 @@ const sockConst = {
     ASTEROID_DESTROYED: 17,
     NEW_ENEMY_ATTACK: 18,
     UPDATE_TEAM_SCORE: 19,
-    UPDATE_PLAYER_LIFE:20,
-    PLAYER_IS_IMMUNE:21,
-    PLAYER_DESTROYED:22,
-    CLEANUP_ASTEROID:23,
-    UPDATE_ASTEROID:24,
+    UPDATE_PLAYER_LIFE: 20,
+    PLAYER_IS_IMMUNE: 21,
+    PLAYER_DESTROYED: 22,
+    CLEANUP_ASTEROID: 23,
+    UPDATE_ASTEROID: 24,
     LAST_ENEMY_DEPLOYED: 25,
     GAME_OVER: 26
 };
@@ -141,5 +141,8 @@ function getGameIdFromUrl() {
 
 function initGamePage(clientSocket) {
     setGamePage_display();
-    initGameCanvas(gameCanvas, clientSocket, myGameSession);
+    setTimeout(function () {
+        initGameCanvas(gameCanvas, clientSocket, myGameSession);
+    }, 2000);
+
 }

@@ -115,7 +115,7 @@ class Asteroid extends LivingObject {
                 let currentHealth = this._property._currentLife / this._property._fullLife;
                 let h = 3;
                 let healtPosY = imgY - 3;
-                this._context.fillStyle = "#1bd6e3";
+                this._context.fillStyle = "#0a4f54";
                 this._context.fillRect(imgX, healtPosY, healthWidth, h);
                 this._context.fillStyle = "#ff2e17";
                 this._context.fillRect(imgX, healtPosY, healthWidth * currentHealth, h);
