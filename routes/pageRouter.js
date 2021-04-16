@@ -49,4 +49,20 @@ router.get('/gamepage/:id', (req, res) => {
     }
 })
 
+router.get('/leaderboards', (req, res) => {
+
+    let allGames = gameEnv.allGames;
+    let gamesCopy = JSON.parse(JSON.stringify(allGames));
+    let gameArray = [];
+    for(let key in gamesCopy){
+        gameArray.push(gamesCopy[key]);
+    }
+    gameArray.sort((a, b) => (a.score < b.score) ? 1 : -1)
+
+    // populate the object in 2nd parameter to pass value in gambelobby page
+    res.render('gameLeaderBoard', {
+        "gameObj": gameArray
+    });
+});
+
 module.exports = router;

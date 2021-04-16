@@ -3,7 +3,7 @@ div.spacer {
     height: 400px;
 }
 
-#home-body, #game-lobby-body, #game-page-body{
+#home-body, #game-lobby-body, #game-page-body, #leaderboard-body{
     background-image: url("../img/nasa-Q1p7bh3SHj8-unsplash.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -12,6 +12,10 @@ div.spacer {
 }
 
 #game-lobby-body {
+    color: #fff;
+}
+
+#leaderboard-body {
     color: #fff;
 }
 

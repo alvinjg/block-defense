@@ -29,9 +29,6 @@ class AsteroidController {
                 this._ZIGZAG_TO_RIGHT = false;
             }
 
-
-
-
             this._asteroid._property._target_y = this._asteroid._canvas.height + 20;
         }
     }

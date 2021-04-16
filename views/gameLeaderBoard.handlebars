@@ -1,0 +1,17 @@
+<body id="leaderboard-body">
+    {{> nav}}
+    <div class="container">
+        <div class="col-12  text-center mb-5">Leaderboards</div>
+        <div class="container">
+            <div class="row" data-id="">
+                <div class="col-6">Team Name</div>
+                <div class="col-6">Total Score</div>
+            </div>
+           {{#each gameObj}}
+            <div class="team row" data-id="{{this.gameID}}">
+                <div class="col-6">{{this.teamName}}</div>
+                <div class="col-6 text-right">{{this.score}}</div>
+            </div>
+            {{/each}}
+        </div>
+</body>
