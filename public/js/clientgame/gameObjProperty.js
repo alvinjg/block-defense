@@ -145,7 +145,7 @@ class PrimaryAmmoProperty extends AmmoProperty {
 class AsteroidProperty extends LivingObjectProperty {
     constructor() {
         super();
-        this._fullLife = 1000;
+        this._fullLife = 1500;
         this._currentLife = this._fullLife;
         this._team = TEAM_TYPE.ENEMY;
         this._radius = 30;

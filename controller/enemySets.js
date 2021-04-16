@@ -35,11 +35,11 @@ const enemyFactory = function () {
             fullLife *= 3;
             scoreVal *= 3;
         } else if (ratioFromDefault > 2 && ratioFromDefault <= 4) {
-            fullLife *= 3.2;
-            scoreVal *= 3.2;
+            fullLife *= 5;
+            scoreVal *= 5;
         } else if (ratioFromDefault > 4 && ratioFromDefault <= 6) {
-            fullLife *= 3.5;
-            scoreVal *= 3.5;
+            fullLife *= 10;
+            scoreVal *= 10;
         } else if (ratioFromDefault > 6) {
             fullLife *= 25;
             scoreVal *= 25;
@@ -162,6 +162,7 @@ const enemyFactory = function () {
     nextAttack4 += timeout;
     for (let elapsed = (stage1End + timeout); elapsed <= stage2End; elapsed += 100) {
         if (nextAttack < elapsed) {
+            nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
             nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
             nextAttack = attackCreator(elapsed, enemyGroups, ENEMY_LEVEL.L1);
         }
