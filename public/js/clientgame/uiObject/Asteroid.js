@@ -175,7 +175,7 @@ class Asteroid extends LivingObject {
 
     // checks if this object collides from other object
     isCollided(objX, objY, objRadius) {
-        let innerRadius = this._property._radius * 0.7;
+        let innerRadius = this._property._radius * 0.6;
         let x = this._property._x - (this._property._radius * 0.2);
         let y = this._property._y;
 
